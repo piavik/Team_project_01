@@ -35,7 +35,7 @@ class Record:
         message = (
                 f"Name: {self.name.value}\n"
                 f"Phones: {', '.join(p.value for p in self.phones)}\n"
-                f"{__last_part}"
+                f"{__last_part}\n"
                 f"Adress: {self.adress if self.adress else 'No adress yet'}"
             )
         return message
