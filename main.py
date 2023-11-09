@@ -190,8 +190,7 @@ OPERATIONS = {
                 "remove": delete_phone,
                 # "d": debug_,
                 "read": restore_data_from_file,
-                "load:x
-": restore_data_from_file,
+                "load": restore_data_from_file,
                 "save": save_data_to_file,
                 "find": random_search,
                 "search for": random_search,
