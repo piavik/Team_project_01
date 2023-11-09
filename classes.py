@@ -3,7 +3,7 @@ from datetime import datetime
 from types import GeneratorType
 from itertools import islice
 import pickle
-from fields import Field, Name, Phone, Birthday
+from fields import Field, Name, Phone, Birthday, Adress
 
 
 RED = "\033[91m"
@@ -24,7 +24,7 @@ class Record:
         if birthday:
             self.birthday = Birthday(birthday)
         if adress:
-            self.adress = str(adress)
+            self.adress = Adress(adress)
 
     def __str__(self) -> str:
         if hasattr(self, 'birthday'):
@@ -73,7 +73,7 @@ class Record:
 
     def add_adress(self, adress: str) -> None:
         ''' Додавання адреси до контакту '''
-        self.adress = str(adress)
+        self.adress = Adress(adress)
 
     @property
     def days_to_birthday(self) -> int:
