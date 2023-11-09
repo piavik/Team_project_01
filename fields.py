@@ -30,7 +30,7 @@ class Phone(Field):
     def value(self, new_value: str):
         ''' Вбудована перевірка, має бути 10 цифр '''
         PHONE_LENGTH = 10
-        if not any([len(new_value) == PHONE_LENGTH, new_value.isdigit()]):
+        if not all([len(new_value) == PHONE_LENGTH, new_value.isdigit()]):
             raise ValueError
         self.__value = new_value
 
