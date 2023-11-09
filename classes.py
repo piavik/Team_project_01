@@ -18,11 +18,13 @@ class Record:
     Відповідає за логіку додавання/видалення/редагування полів та зберігання поля Name
     '''
 
-    def __init__(self, name: str, birthday=None) -> None:
+    def __init__(self, name: str, birthday=None, adress=None) -> None:
         self.name = Name(name)
         self.phones = []
         if birthday:
             self.birthday = Birthday(birthday)
+        if adress:
+            self.adress = str(adress)
 
     def __str__(self) -> str:
         if hasattr(self, 'birthday'):
@@ -34,6 +36,7 @@ class Record:
                 f"Name: {self.name.value}\n"
                 f"Phones: {', '.join(p.value for p in self.phones)}\n"
                 f"{__last_part}"
+                f"Adress: {self.adress if self.adress else 'No adress yet'}"
             )
         return message
 
@@ -67,6 +70,10 @@ class Record:
     def add_birthday(self, birthday: str) -> None:
         ''' Додавання дня народження до контакту '''
         self.birthday = Birthday(birthday)
+
+    def add_adress(self, adress: str) -> None:
+        ''' Додавання адреси до контакту '''
+        self.adress = str(adress)
 
     @property
     def days_to_birthday(self) -> int:

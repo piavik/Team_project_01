@@ -45,7 +45,7 @@ def hello(*args):
     return BLUE + "How can I help you?" + RESET
 
 @input_error
-def add_(contact_name, new_phone, birthday=None):
+def add_(contact_name, new_phone, birthday=None, adress=None):
     # with "birthday" field it is necessary to remove the feature 
     # to add several phones at a time
     # so phones are added one by one now
@@ -55,13 +55,17 @@ def add_(contact_name, new_phone, birthday=None):
         if birthday:
             record.add_birthday(birthday)
         record.add_phone(new_phone)
+        if adress:
+            record.add_adress(adress)
     else:
         record = Record(contact_name)
         if birthday:
             record.add_birthday(birthday)
+        if adress:
+            record.add_adress(adress)
         record.add_phone(new_phone)
         address_book.add_record(record)
-    message = f"\n{GREEN}Record added:\n  {RESET}Name: {record.name.value}\n  phone: {new_phone}"
+    message = f"\n{GREEN}Record added:\n  {RESET}Name: {record.name.value}\n  phone: {new_phone}\n adress:{adress if adress else 'No adress yet'}"
     return message
 
 @input_error
@@ -190,8 +194,7 @@ OPERATIONS = {
                 "remove": delete_phone,
                 # "d": debug_,
                 "read": restore_data_from_file,
-                "load:x
-": restore_data_from_file,
+                "load": restore_data_from_file,
                 "save": save_data_to_file,
                 "find": random_search,
                 "search for": random_search,
