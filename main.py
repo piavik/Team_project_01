@@ -1,5 +1,6 @@
 from classes import Record, AddressBook
 from types import GeneratorType
+import folder_sort
 
 
 RED = "\033[91m"
@@ -152,6 +153,14 @@ def random_search(*args):
                 search_result.add_record(record)
     return search_result.iterator(2)
 
+@input_error
+def sort_folder(*args):
+    ''' Sort files from a single folder into categorized folders '''
+    if not args:
+        raise IndexError
+    return folder_sort.main(args[0])
+
+
 address_book = AddressBook()
 
 # order MATTERS!!!! Single word command must be in the end !
@@ -195,6 +204,8 @@ OPERATIONS = {
                 "find": random_search,
                 "search for": random_search,
                 "search": random_search,
+                "sort folder": sort_folder,
+                "sort": sort_folder,
               }
 
 def parse(input_text: str):
