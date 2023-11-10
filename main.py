@@ -130,7 +130,7 @@ def save_data_to_file(file_name=FILENAME, *args):
     address_book.save(file_name)
     return f"{GREEN}Saved to {file_name}{RESET}"
 
-@input_error
+# @input_error
 def random_search(*args):
     search = args[0]
     # do not search if less than 3 symbols entered
@@ -232,6 +232,7 @@ def main():
             for _selection in command_to_run:
                 for _entry in _selection:
                     print(_entry)
+                    print('----------')
                 _ = input(f"{BLUE}....Press Enter to continue....{RESET}")
         else:
             print(f'{RESET}{command_to_run}')
