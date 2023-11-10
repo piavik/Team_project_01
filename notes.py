@@ -38,9 +38,8 @@ def find_by_note(key: str) -> list:
             notes.append(i)
     return notes
             
-# def delete_note(self, key: str) -> None:
-#     if key in self.data:
-#         self.data.pop(key)
+def delete_note(key) -> None:
+    notes_lst.remove(key)
         
 # def iterator(self, n=2) -> GeneratorType:
 #     for i in range(0, len(self), n):
