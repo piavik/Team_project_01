@@ -38,7 +38,9 @@ def input_error(func):
             result = "Not enough parameters."
         except TypeError:
             result = "Sorry, I do not understand."
-        return "{}{}{}".format(RED,result,RESET)
+        else:
+            return f'{GREEN}{result}{RESET}'
+        return f'{RED}{result}{RESET}'
     return inner
 
 def hello(*args):
