@@ -1,4 +1,5 @@
 from classes import Record, AddressBook
+import notes
 from types import GeneratorType
 
 
