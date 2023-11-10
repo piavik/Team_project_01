@@ -1,5 +1,5 @@
 from classes import Record, AddressBook
-import notes
+from notes import NoteRecord, add_record, find_by_tag, find_by_note
 from types import GeneratorType
 
 
@@ -153,6 +153,20 @@ def random_search(*args):
                 search_result.add_record(record)
     return search_result.iterator(2)
 
+def add_note():
+    note = input("Print note: ")
+    note_rec = NoteRecord(note)
+    tags = input("Print tags: ")
+    note_rec.add_tags(tags.split(", "))
+    add_record(note_rec)
+    return "The note was saved!"
+
+def find_note():
+    find_func = input("Select search by tags or notes(Print t or n).")
+    use_func = find_by_tag if find_func == "t" else find_by_note
+    request = input("Print what you search: ")
+    return use_func(request)
+        
 address_book = AddressBook()
 
 # order MATTERS!!!! Single word command must be in the end !
@@ -165,6 +179,7 @@ OPERATIONS = {
                 "add record": add_,
                 "add number": add_,
                 "add phone": add_,
+                "add note": add_note,
                 "add": add_,
                 "set": add_,
                 "change entry": change,
@@ -193,9 +208,10 @@ OPERATIONS = {
                 "read": restore_data_from_file,
                 "load": restore_data_from_file,
                 "save": save_data_to_file,
+                "find note": find_note,
                 "find": random_search,
                 "search for": random_search,
-                "search": random_search,
+                "search": random_search
               }
 
 def parse(input_text: str):
@@ -234,6 +250,9 @@ def main():
                 for _entry in _selection:
                     print(_entry)
                 _ = input(f"{BLUE}....Press Enter to continue....{RESET}")
+        elif isinstance(command_to_run, list):
+            for rec in command_to_run:
+                print(rec)
         else:
             print(f'{RESET}{command_to_run}')
 

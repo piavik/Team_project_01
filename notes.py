@@ -21,19 +21,19 @@ class NoteRecord():
         
 notes_lst = []       
 
-def add_record(self, record: NoteRecord) -> None:
+def add_record(record: NoteRecord) -> None:
     notes_lst.append(record)
     
-def find_note_by_tag(self, key: str) -> list:
+def find_by_tag(key: str) -> list:
     notes = []
-    for i in self.data.values():
+    for i in notes_lst:
         if key in i.tags:
             notes.append(i)
     return notes
     
-def search_note_by_note(self, key: str) -> list:
+def find_by_note(key: str) -> list:
     notes = []
-    for i in self.data.values():
+    for i in notes_lst:
         if key in i.note:
             notes.append(i)
     return notes
