@@ -153,6 +153,7 @@ def random_search(*args):
                 search_result.add_record(record)
     return search_result.iterator(2)
 
+@input_error
 def add_note():
     note = input("Print note: ")
     note_rec = NoteRecord(note)
@@ -162,12 +163,15 @@ def add_note():
     save_notes()
     return f"{GREEN}The note was saved!{RESET}"
 
+@input_error
 def find_note():
     find_func = input("Select search by tags or notes(Print t or n).")
     use_func = find_by_tag if find_func == "t" else find_by_note
     request = input("Print what you search: ")
-    return use_func(request)
+    res = use_func(request)
+    return res if res else f"{RED}No notes found for this request!{RESET}"
 
+@input_error
 def find_note_to_func():
     num = 1
     found_notes = find_note()
@@ -190,12 +194,14 @@ def change_note():
     found_notes[int(indx)-1].edit_note(changed_note)
     return f"{GREEN}Note was changed!{RESET}"
 
+@input_error
 def add_tags():
     found_notes, indx = find_note_to_func()
     new_tags = input("Write tags you want to add: ")
     found_notes[int(indx)-1].add_tags(new_tags.split(", "))
     return f"{GREEN}Tags were added!{RESET}"
 
+@input_error
 def del_note():
     found_notes, indx = find_note_to_func()
     check = input("Are you sure you want to delete this entry?(y or n): ")
