@@ -1,5 +1,5 @@
 from classes import Record, AddressBook
-from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note
+from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
 from types import GeneratorType
 
 
@@ -159,6 +159,7 @@ def add_note():
     tags = input("Print tags: ")
     note_rec.add_tags(tags.split(", "))
     add_record(note_rec)
+    save_notes()
     return f"{GREEN}The note was saved!{RESET}"
 
 def find_note():
@@ -250,6 +251,7 @@ OPERATIONS = {
                 "save": save_data_to_file,
                 "find note": find_note,
                 "find": random_search,
+                "sort notes": sort_notes,
                 "search for": random_search,
                 "search": random_search
               }
@@ -269,6 +271,7 @@ def main():
     entered_file_name = input(f"From what file info should be fetched (default is '{FILENAME}')? ").lower()
     file_name = FILENAME if entered_file_name == '' else entered_file_name
     address_book.load(file_name)
+    load_notes()
     while True:
         input_ = input(">>>").lower()
         # check if user want to stop, strip() - just in case :)
@@ -276,6 +279,7 @@ def main():
             print(f"{GREEN}See you, bye!{RESET}")
             # TODO: format dependent
             save_data_to_file(file_name)
+            save_notes()
             break
         # check for empty input, do nothing
         if input_.strip() == '':
