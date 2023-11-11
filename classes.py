@@ -108,6 +108,13 @@ class AddressBook(UserDict):
         ''' generator '''
         for i in range(0, len(self), n):
             yield islice(self.data.values(), i, i+n)
+            
+    def bd_in_XX_days(self, days):
+        suit_lst = []
+        for rec in self.data.values():
+            print(type(rec.days_to_birthday))
+            suit_lst.append(rec) if rec.days_to_birthday < int(days) else ...
+        return suit_lst
 
     def save(self, filename="book.dat", format='bin'):
         ''' TODO: format selection and using different formats '''

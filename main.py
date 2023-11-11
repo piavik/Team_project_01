@@ -152,6 +152,10 @@ def random_search(*args):
                 search_result.add_record(record)
     return search_result.iterator(2)
 
+def birthday_in_XX_days(*args):
+    return address_book.bd_in_XX_days(args[0])
+    
+
 address_book = AddressBook()
 
 # order MATTERS!!!! Single word command must be in the end !
@@ -195,6 +199,7 @@ OPERATIONS = {
                 "find": random_search,
                 "search for": random_search,
                 "search": random_search,
+                "birthdays": birthday_in_XX_days,
               }
 
 def parse(input_text: str):
