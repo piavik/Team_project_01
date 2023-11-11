@@ -18,7 +18,7 @@ class Record:
     Відповідає за логіку додавання/видалення/редагування полів та зберігання поля Name
     '''
 
-    def __init__(self, name: str, birthday=None, adress=None) -> None:
+    def __init__(self, name: str, birthday=None, email=None, adress=None) -> None:
         self.name = Name(name)
         self.phones = []
         if birthday:

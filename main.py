@@ -45,7 +45,7 @@ def hello(*args):
     return BLUE + "How can I help you?" + RESET
 
 @input_error
-def add_(contact_name, new_phone, birthday=None, adress=None, email=None):
+def add_(contact_name, new_phone, birthday=None):
     # with "birthday" field it is necessary to remove the feature 
     # to add several phones at a time
     # so phones are added one by one now
@@ -55,21 +55,13 @@ def add_(contact_name, new_phone, birthday=None, adress=None, email=None):
         if birthday:
             record.add_birthday(birthday)
         record.add_phone(new_phone)
-        if adress:
-            record.add_adress(adress)
-        if email:
-            record.add_email(email)
     else:
         record = Record(contact_name)
         if birthday:
             record.add_birthday(birthday)
-        if adress:
-            record.add_adress(adress)
-        if email:
-            record.add_email(email)
         record.add_phone(new_phone)
         address_book.add_record(record)
-    message = f"\n{GREEN}Record added:\n{RESET}Name: {record.name.value}\nphone: {new_phone}\nadress:{adress if adress else 'No adress yet'}\nemail:{', '.join(str(e) for e in record.emails) if email else 'No email yet'}"
+    message = f"\n{GREEN}Record added:\n{RESET}Name: {record.name.value}\nphone: {new_phone}"
     return message
 
 @input_error

@@ -72,7 +72,7 @@ class Email(Field):
     @value.setter
     def value(self, new_email: str):
         ''' Вбудована перевірка, має бути формат електронної скриньки '''
-        result = re.findall(r'[A-Za-z][A-Za-z0-9._%+-]{1,}@[A-Za-z]+\.[A-Za-z]{2,}\b', new_email)
+        result = re.findall(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)', new_email)
         if not new_email in result:
             raise ValueError
         self.__value = new_email   
