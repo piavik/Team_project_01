@@ -28,30 +28,25 @@ class Record:
         self.emails = []
 
     def __str__(self) -> str:
-        if hasattr(self, 'birthday') and hasattr(self, 'emails') and hasattr(self, 'adress'):
-            __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
-            __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}\nEmail: {', '.join(e.value for e in self.emails)}\nAdress: {self.adress}"
-        elif hasattr(self, 'birthday') and hasattr(self, 'emails'):
-            __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
-            __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}\nEmail: {', '.join(e.value for e in self.emails)}"
-        elif hasattr(self, 'birthday') and hasattr(self, 'adress'):
-            __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
-            __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}\nAdress: {self.adress}"
-        elif hasattr(self, 'birthday'):
+        #перевіряємо чи є у контакта 'birthday'
+        if hasattr(self, 'birthday'):
             __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
             __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}"
-        elif hasattr(self, 'emails') and hasattr(self, 'adress'):
-            __last_part = f"Email: {', '.join(e.value for e in self.emails)}\nAdress: {self.adress}"
-        elif hasattr(self, 'adress'):
-            __last_part = f"Adress: {self.adress}"
-        elif hasattr(self, 'emails'):
-            __last_part = f"Email:{', '.join(e.value for e in self.emails)}"
         else:
             __last_part = ""
+        #перевіряємо чи є у контакта "email", якщо більше одного то пишемо "Emails"
+        if len(self.emails) > 1:
+            __last_part += f"Emails: {', '.join(e.value for e in self.emails)}\n"
+        elif len(self.emails) == 1:
+            __last_part += f"Email: {self.emails[0]}\n"
+        #перевіряємо чи є у контакта "adress"
+        if hasattr(self, "adress"):
+            __last_part += f"Adress: {self.adress}"
+
         message = (
                 f"Name: {self.name.value}\n"
                 f"Phones: {', '.join(p.value for p in self.phones)}\n"
-                f"{__last_part}\n"
+                f"{__last_part}"
             )
         return message
 
