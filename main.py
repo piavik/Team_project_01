@@ -146,7 +146,7 @@ def change_email(*args):
     new_email = args[2]
     record:Record = address_book.data[contact_name]
     record.change_email(old_email, new_email)
-    return f"\n{GREEN}Changed:\n  {RESET}{record.name.value}'s email:\n  {old_email} to {new_email}"
+    return f"\n{GREEN}{record.name.value}'s email changed:\n  {RESET}{old_email} to {new_email}"
 
 
 @input_error
