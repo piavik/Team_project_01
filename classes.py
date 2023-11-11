@@ -3,7 +3,7 @@ from datetime import datetime
 from types import GeneratorType
 from itertools import islice
 import pickle
-from fields import Field, Name, Phone, Birthday, Adress
+from fields import Field, Name, Phone, Birthday, Adress, Email
 
 
 RED = "\033[91m"
@@ -25,18 +25,33 @@ class Record:
             self.birthday = Birthday(birthday)
         if adress:
             self.adress = Adress(adress)
+        self.emails = []
 
     def __str__(self) -> str:
-        if hasattr(self, 'birthday'):
+        if hasattr(self, 'birthday') and hasattr(self, 'emails') and hasattr(self, 'adress'):
+            __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
+            __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}\nEmail: {', '.join(e.value for e in self.emails)}\nAdress: {self.adress}"
+        elif hasattr(self, 'birthday') and hasattr(self, 'emails'):
+            __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
+            __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}\nEmail: {', '.join(e.value for e in self.emails)}"
+        elif hasattr(self, 'birthday') and hasattr(self, 'adress'):
+            __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
+            __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}\nAdress: {self.adress}"
+        elif hasattr(self, 'birthday'):
             __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
             __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}"
+        elif hasattr(self, 'emails') and hasattr(self, 'adress'):
+            __last_part = f"Email: {', '.join(e.value for e in self.emails)}\nAdress: {self.adress}"
+        elif hasattr(self, 'adress'):
+            __last_part = f"Adress: {self.adress}"
+        elif hasattr(self, 'emails'):
+            __last_part = f"Email:{', '.join(e.value for e in self.emails)}"
         else:
             __last_part = ""
         message = (
                 f"Name: {self.name.value}\n"
                 f"Phones: {', '.join(p.value for p in self.phones)}\n"
                 f"{__last_part}\n"
-                f"Adress: {self.adress if self.adress else 'No adress yet'}"
             )
         return message
 
@@ -73,7 +88,13 @@ class Record:
 
     def add_adress(self, adress: str) -> None:
         ''' Додавання адреси до контакту '''
-        self.adress = Adress(adress)
+        self.adress = adress
+
+    def add_email(self, email: str) -> None:
+        ''' Додавання email до контакту '''
+        if email not in (e.value for e in self.emails):
+            self.emails.append(Email(email))
+
 
     @property
     def days_to_birthday(self) -> int:

@@ -45,27 +45,31 @@ def hello(*args):
     return BLUE + "How can I help you?" + RESET
 
 @input_error
-def add_(contact_name, new_phone, birthday=None, adress=None):
+def add_(contact_name, new_phone, birthday=None, adress=None, email=None):
     # with "birthday" field it is necessary to remove the feature 
     # to add several phones at a time
     # so phones are added one by one now
     # if exist - we add phone to the list, not replace
     if contact_name in address_book.data.keys():
-        record = address_book.data[contact_name]
+        record:Record = address_book.data[contact_name]
         if birthday:
             record.add_birthday(birthday)
         record.add_phone(new_phone)
         if adress:
             record.add_adress(adress)
+        if email:
+            record.add_email(email)
     else:
         record = Record(contact_name)
         if birthday:
             record.add_birthday(birthday)
         if adress:
             record.add_adress(adress)
+        if email:
+            record.add_email(email)
         record.add_phone(new_phone)
         address_book.add_record(record)
-    message = f"\n{GREEN}Record added:\n  {RESET}Name: {record.name.value}\n  phone: {new_phone}\n adress:{adress if adress else 'No adress yet'}"
+    message = f"\n{GREEN}Record added:\n{RESET}Name: {record.name.value}\nphone: {new_phone}\nadress:{adress if adress else 'No adress yet'}\nemail:{', '.join(str(e) for e in record.emails) if email else 'No email yet'}"
     return message
 
 @input_error
@@ -134,6 +138,24 @@ def save_data_to_file(file_name=FILENAME, *args):
     address_book.save(file_name)
     return f"{GREEN}Saved to {file_name}{RESET}"
 
+
+@input_error
+def add_email(*args):
+    name = args[0]
+    email_to_add = args[1]
+    address_book.find(name).add_email(email_to_add)
+    return f"New email added to {name} - {email_to_add}"
+
+
+@input_error
+def add_adress(*args):
+    name = args[0]
+    adress_to_add = ' '.join(str(e) for e in args[1:])
+    address_book.find(name).add_adress(adress_to_add)
+    return f"New adress added to {name} - {adress_to_add}"
+
+
+
 @input_error
 def random_search(*args):
     search = args[0]
@@ -168,6 +190,9 @@ OPERATIONS = {
                 "add record": add_,
                 "add number": add_,
                 "add phone": add_,
+                "add email": add_email,
+                "add adress": add_adress,
+                "add adres": add_adress,
                 "add": add_,
                 "set": add_,
                 "change entry": change,

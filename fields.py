@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 
 class Field:
@@ -30,7 +31,7 @@ class Phone(Field):
     def value(self, new_value: str):
         ''' Вбудована перевірка, має бути 10 цифр '''
         PHONE_LENGTH = 10
-        if not any([len(new_value) == PHONE_LENGTH, new_value.isdigit()]):
+        if not all([len(new_value) == PHONE_LENGTH, new_value.isdigit()]):
             raise ValueError
         self.__value = new_value
 
@@ -61,3 +62,20 @@ class Adress(Field):
     @value.setter
     def value(self, value) -> None:
         self.__value = value
+
+class Email(Field):
+    ''' Клас для зберігання Електронних скриньок. '''
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, new_email: str):
+        ''' Вбудована перевірка, має бути формат електронної скриньки '''
+        result = re.findall(r'[A-Za-z][A-Za-z0-9._%+-]{1,}@[A-Za-z]+\.[A-Za-z]{2,}\b', new_email)
+        if not new_email in result:
+            raise ValueError
+        self.__value = new_email   
+
+    def __str__(self):
+        return self.__value
