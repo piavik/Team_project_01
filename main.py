@@ -1,4 +1,4 @@
-from classes import Record, AddressBook
+from classes import Record, AddressBook, Email
 from types import GeneratorType
 
 
@@ -140,12 +140,56 @@ def add_email(*args):
 
 
 @input_error
+def change_email(*args):
+    contact_name = args[0]
+    old_email = args[1]
+    new_email = args[2]
+    record:Record = address_book.data[contact_name]
+    record.change_email(old_email, new_email)
+    return f"\n{GREEN}Changed:\n  {RESET}{record.name.value}'s email:\n  {old_email} to {new_email}"
+
+
+@input_error
+def delete_email(*args):
+    contact_name = args[0]
+    if contact_name not in list(address_book.data.keys()):
+        raise ValueError
+    if args[1:]:
+        emails_to_delete = args[1:]
+        record:Record = address_book.data[contact_name]
+        for email in emails_to_delete:
+            record.delete_email(email)
+    else:
+        address_book.delete(contact_name)
+    return GREEN + f"{contact_name}'s emails removed" + RESET
+
+
+@input_error
 def add_adress(*args):
     name = args[0]
     adress_to_add = ' '.join(str(e) for e in args[1:])
     address_book.find(name).add_adress(adress_to_add)
     return f"New adress added to {name} - {adress_to_add}"
 
+
+def change_adress(*args):
+    contact_name = args[0]
+    if contact_name not in list(address_book.data.keys()):
+        raise ValueError
+    if args[1:]:
+        new_adress = ' '.join(str(e) for e in args[1:])
+        record:Record = address_book.data[contact_name]
+        record.delete_adress()
+        record.add_adress(new_adress)
+    return GREEN + f"{contact_name} has new adress:\n{new_adress}" + RESET
+
+
+def delete_adress(contact_name):
+    if contact_name not in list(address_book.data.keys()):
+        raise ValueError
+    record:Record = address_book.data[contact_name]
+    record.delete_adress()
+    return GREEN + f"{contact_name}`s adress was succesfully deleted!" + RESET
 
 
 @input_error
@@ -183,8 +227,11 @@ OPERATIONS = {
                 "add number": add_,
                 "add phone": add_,
                 "add email": add_email,
+                "change email": change_email,
+                "delete email": delete_email,
                 "add adress": add_adress,
-                "add adres": add_adress,
+                "change adress": change_adress,
+                "delete adress": delete_adress,
                 "add": add_,
                 "set": add_,
                 "change entry": change,
