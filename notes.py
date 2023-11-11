@@ -1,6 +1,9 @@
 from datetime import datetime
 import pickle
 
+BLUE = "\033[94m"
+RESET = "\033[0m"
+
 class NoteRecord():
     def __init__(self, note: str) -> None:
         self.note = note
@@ -16,7 +19,7 @@ class NoteRecord():
         self.note = new_note
         
     def __str__(self):
-        return f" Tags: {', '.join(self.tags)}\n Note: {self.note}\n Date of creation: {self.create_date}."
+        return f" {BLUE}Tags:{RESET} {', '.join(self.tags)}\n {BLUE}Note:{RESET} {self.note}\n {BLUE}Date of creation:{RESET} {self.create_date}.\n"
 
 try:
     notes_lst[0]

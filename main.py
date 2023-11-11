@@ -32,14 +32,15 @@ def input_error(func):
         try:
             result = func(*args)
         except KeyError:
-            result = "Not found. Unknown record."
+            result = f"{RED}Not found. Unknown record.{RESET}"
         except ValueError:
-            result = "Entered incorrect data"
+            result = f"{RED}Entered incorrect data{RESET}"
         except IndexError:
-            result = "Not enough parameters."
+            result = f"{RED}Not enough parameters.{RESET}"
         except TypeError:
-            result = "Sorry, I do not understand."
-        return "{}{}{}".format(RED,result,RESET)
+            result = f"{RED}Sorry, I do not understand.{RESET}"
+        # return "{}{}{}".format(RED,result,RESET)
+        return result
     return inner
 
 def hello(*args):
