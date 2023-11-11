@@ -40,11 +40,6 @@ def find_by_note(key: str) -> list:
             
 def delete_note(key) -> None:
     notes_lst.remove(key)
-        
-# def iterator(self, n=2) -> GeneratorType:
-#     for i in range(0, len(self), n):
-#         yield islice(self.data.values(), i, i+n)
-                
     
 if __name__ == "__main__":
     ...
