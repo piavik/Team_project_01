@@ -157,8 +157,10 @@ def random_search(*args):
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
-        raise IndexError
-    return folder_sort.main(args[0])
+        folder = input(f"{GREEN}Enter the folder name: {RESET}")
+    else:
+        folder = args[0]
+    return folder_sort.main(folder)
 
 
 address_book = AddressBook()
