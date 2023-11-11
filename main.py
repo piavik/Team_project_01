@@ -68,7 +68,7 @@ def add_(contact_name, new_phone, birthday=None):
     return message
 
 @input_error
-def change(*args):
+def change_phone(*args):
     contact_name = args[0]
     old_phone, new_phone = args[1:]
     record = address_book.data[contact_name]
@@ -79,7 +79,7 @@ def change(*args):
 def get_phone(*args):
     return address_book.find(args[0])
 
-def all_(N=3, *args):
+def all_contacts(N=3, *args):
     return address_book.iterator(N)
 
 def help_(*args):
@@ -179,25 +179,25 @@ OPERATIONS = {
                 "add phone": add_,
                 "add": add_,
                 "set": add_,
-                "change entry": change,
-                "change record": change,
-                "change number": change,
-                "change phone": change,
-                "change": change, 
+                "change entry": change_phone,
+                "change record": change_phone,
+                "change number": change_phone,
+                "change phone": change_phone,
+                "change": change_phone, 
                 "get entry": get_phone,
                 "get record": get_phone,
                 "get number": get_phone,
                 "get phone": get_phone,
-                "get all": all_,
+                "get all": all_contacts,
                 "get": get_phone,
                 "show number": get_phone,
                 "show phone": get_phone,
-                "all": all_,
-                "show all": all_,
+                "all": all_contacts,
+                "show all": all_contacts,
                 "show": get_phone,
-                "list all": all_,
-                "full": all_,
-                "list": all_,
+                "list all": all_contacts,
+                "full": all_contacts,
+                "list": all_contacts,
                 "del": delete_phone,
                 "delete": delete_phone,
                 "remove": delete_phone,
