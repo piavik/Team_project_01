@@ -152,6 +152,7 @@ def random_search(*args):
                 search_result.add_record(record)
     return search_result.iterator(2)
 
+@input_error
 def birthday_in_XX_days(*args):
     return address_book.bd_in_XX_days(args[0])
     

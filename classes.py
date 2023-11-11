@@ -112,9 +112,8 @@ class AddressBook(UserDict):
     def bd_in_XX_days(self, days):
         suit_lst = []
         for rec in self.data.values():
-            print(type(rec.days_to_birthday))
             suit_lst.append(rec) if rec.days_to_birthday < int(days) else ...
-        return suit_lst
+        return suit_lst if suit_lst else f"Noone has birthday in {days} days!"
 
     def save(self, filename="book.dat", format='bin'):
         ''' TODO: format selection and using different formats '''
