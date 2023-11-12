@@ -40,7 +40,7 @@ def input_error(func):
         except TypeError:
             result = "Sorry, I do not understand."
         else:
-            return f'{GREEN}{result}{RESET}'
+            return result
         return f'{RED}{result}{RESET}'
     return inner
 
@@ -156,6 +156,10 @@ def random_search(*args):
     return search_result.iterator(2)
 
 @input_error
+def birthday_in_XX_days(*args):
+    ''' знайти всі контакти, у яких день народження за XX днів'''
+    return address_book.bd_in_XX_days(int(args[0]))
+
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
@@ -208,8 +212,9 @@ OPERATIONS = {
                 "find": random_search,
                 "search for": random_search,
                 "search": random_search,
+                "birthdays": birthday_in_XX_days,
                 "sort folder": sort_folder,
-                "sort": sort_folder,
+                "sort": sort_folder
               }
 
 def parse(input_text: str):
