@@ -3,7 +3,7 @@ from datetime import datetime
 from types import GeneratorType
 from itertools import islice
 import pickle
-from fields import Field, Name, Phone, Birthday
+from fields import Field, Name, Phone, Birthday, Adress, Email
 
 
 RED = "\033[91m"
@@ -18,18 +18,32 @@ class Record:
     Відповідає за логіку додавання/видалення/редагування полів та зберігання поля Name
     '''
 
-    def __init__(self, name: str, birthday=None) -> None:
+    def __init__(self, name: str, birthday=None, email=None, adress=None) -> None:
         self.name = Name(name)
         self.phones = []
         if birthday:
             self.birthday = Birthday(birthday)
+        if adress:
+            self.adress = Adress(adress)
+        self.emails = []
 
     def __str__(self) -> str:
+        #перевіряємо чи є у контакта 'birthday'
         if hasattr(self, 'birthday'):
             __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
-            __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}"
+            __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}\n"
         else:
             __last_part = ""
+        #перевіряємо чи є у контакта "email", якщо більше одного то пишемо "Emails"
+        if self.emails != []:
+            if len(self.emails) > 1:
+                __last_part += f"Emails: {', '.join(e.value for e in self.emails)}\n"
+            elif len(self.emails) == 1:
+                __last_part += f"Email: {self.emails[0]}\n"
+        #перевіряємо чи є у контакта "adress"
+        if hasattr(self, "adress") and self.adress != "":
+            __last_part += f"Adress: {self.adress}"
+
         message = (
                 f"Name: {self.name.value}\n"
                 f"Phones: {', '.join(p.value for p in self.phones)}\n"
@@ -67,6 +81,32 @@ class Record:
     def add_birthday(self, birthday: str) -> None:
         ''' Додавання дня народження до контакту '''
         self.birthday = Birthday(birthday)
+
+    def add_adress(self, adress: str) -> None:
+        ''' Додавання адреси до контакту '''
+        self.adress = adress
+
+    def delete_adress(self):
+        self.adress = ""
+        
+    def add_email(self, email: str) -> None:
+        ''' Додавання email до контакту '''
+        if email not in (e.value for e in self.emails):
+            self.emails.append(Email(email))
+    
+    def change_email(self, old_email:str, new_email:str):
+        ''' Редагування email контакта '''
+        if old_email not in (e.value for e in self.emails):
+            raise ValueError
+        for index, email in enumerate(self.emails):
+            if email.value == old_email:
+                self.emails[index].value = new_email
+
+    def delete_email(self, old_email:str):
+        ''' Видалення email контакта '''
+        for email in self.emails:
+            if email.value == old_email:
+                self.emails.remove(email)
 
     @property
     def days_to_birthday(self) -> int:
