@@ -204,8 +204,14 @@ def change_note():
 def add_tags():
     found_notes, indx = find_note_to_func()
     new_tags = input("Write tags you want to add: ")
-    found_notes[int(indx)-1].add_tags(new_tags.split(", "))
+    found_notes[int(indx)-1].add_tags(new_tags.split(", ") if "," in new_tags else new_tags.split(" "))
     return f"{GREEN}Tags were added!{RESET}"
+
+def delete_tags():
+    found_notes, indx = find_note_to_func()
+    tags_to_del = input("Write tags you want to delete: ")
+    found_notes[int(indx)-1].del_tags(tags_to_del.split(", ") if "," in tags_to_del else tags_to_del.split(" "))
+    return f"{RED}Tags were deleted!{RESET}"
 
 @input_error
 def del_note():
@@ -265,6 +271,7 @@ OPERATIONS = {
                 "full": all_,
                 "list": all_,
                 "delete note": del_note,
+                "delete tags": delete_tags,
                 "del": delete_phone,
                 "delete": delete_phone,
                 "remove": delete_phone,

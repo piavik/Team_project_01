@@ -15,6 +15,10 @@ class NoteRecord():
         for i in tags:
             self.tags.append(i.lower())
             
+    def del_tags(self, tags_to_del: list) -> None:
+        for i in tags_to_del:
+            self.tags.remove(i) if i in self.tags else ...
+            
     def edit_note(self, new_note: str) -> None:
         self.note = new_note
         
