@@ -9,5 +9,5 @@ setup(
     license='MIT',
     packages=find_namespace_packages(),
     install_requires=['prompt_toolkit'],
-    entry_points={'console_scripts': ['botik = Team_project_01.main:main']}
+    entry_points={'console_scripts': ['Informator = Team_project_01.main:main']}
 )
