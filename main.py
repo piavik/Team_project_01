@@ -335,7 +335,7 @@ def del_note():
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
-        folder = input(f"{GREEN}Enter the folder name: {RESET}")
+        folder = input(f"{BLUE}Enter the folder name: {RESET}")
         if not folder:
             raise IndexError
     else:
