@@ -1,3 +1,7 @@
+*book.bin
+*book.dat
+test_folder/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
