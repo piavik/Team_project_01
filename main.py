@@ -159,7 +159,7 @@ def add_note():
     note = input("Print note: ")
     note_rec = NoteRecord(note)
     tags = input("Print tags: ")
-    note_rec.add_tags(tags.split(", "))
+    note_rec.add_tags(tags.split(", ") if "," in tags else tags.split(" "))
     add_record(note_rec)
     save_notes()
     return f"{GREEN}The note was saved!{RESET}"
@@ -176,15 +176,15 @@ def find_note():
 def find_note_to_func():
     num = 1
     found_notes = find_note()
-    if len(found_notes) > 1:
+    if isinstance(found_notes, str):
+        return found_notes
+    elif len(found_notes) > 1:
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
         indx = input("Write the number of the note you want to edit: ")
     elif len(found_notes) == 1:
         indx = 1
-    else:
-        return f"{RED}There is no such note.{RESET}"
     print(found_notes[int(indx)-1])
     return found_notes, indx
 
@@ -204,10 +204,21 @@ def add_tags():
 
 @input_error
 def del_note():
-    found_notes, indx = find_note_to_func()
+    num = 1
+    found_notes = find_note()
+    if isinstance(found_notes, str):
+        return found_notes
+    elif len(found_notes) > 1:
+        for rec in found_notes:
+            print(f"{num}. {rec.note}")
+            num += 1
+        indx = input("Write the number of the note you want to delete: ")
+    elif len(found_notes) == 1:
+        indx = 1
+    print(found_notes[int(indx)-1])
     check = input("Are you sure you want to delete this entry?(y or n): ")
-    if check == "y":
-        delete_note(found_notes[int(indx-1)])
+    if check in "yes":
+        delete_note(found_notes[int(indx)-1])
         return f"{RED}Note was deleted!{RESET}"
     else:
         return f"{RED}Note wasn't delete!{RESET}"

@@ -13,7 +13,7 @@ class NoteRecord():
         
     def add_tags(self, tags: list) -> None:
         for i in tags:
-            self.tags.append(i)
+            self.tags.append(i.lower())
             
     def edit_note(self, new_note: str) -> None:
         self.note = new_note
@@ -32,7 +32,7 @@ def add_record(record: NoteRecord) -> None:
 def find_by_tag(key: str) -> list:
     notes = []
     for i in notes_lst:
-        if key in i.tags:
+        if key.lower() in i.tags:
             notes.append(i)
     return notes
     
