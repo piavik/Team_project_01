@@ -191,10 +191,21 @@ def save_data_to_file(file_name=FILENAME, *args):
 
 @input_error
 def add_email(*args):
-    name = args[0]
-    email_to_add = args[1]
-    address_book.find(name).add_email(email_to_add)
-    return f"New email added to {name} - {email_to_add}"
+    if len(args) < 1:
+        contact = input(f"{GREEN}Enter name: {RESET}")
+        contact_name = contact
+    else:
+        contact_name = args[0]
+    record:Record = address_book.data[contact_name]
+    if len(args) <= 1:
+        email = input(f"{GREEN}Enter email you want to add: {RESET}")
+        if email in [e.value for e in record.emails]:
+            return f"{contact_name} already has this email - {email}. Try again!"
+        email_to_add = email
+    else:
+        email_to_add = args[1]
+    address_book.find(contact_name).add_email(email_to_add)
+    return f"New email added to {contact_name} - {email_to_add}"
 
 
 @input_error
