@@ -191,10 +191,21 @@ def save_data_to_file(file_name=FILENAME, *args):
 
 @input_error
 def add_email(*args):
-    name = args[0]
-    email_to_add = args[1]
-    address_book.find(name).add_email(email_to_add)
-    return f"New email added to {name} - {email_to_add}"
+    if len(args) < 1:
+        contact = input(f"{GREEN}Enter name: {RESET}")
+        contact_name = contact
+    else:
+        contact_name = args[0]
+    record:Record = address_book.data[contact_name]
+    if len(args) <= 1:
+        email = input(f"{GREEN}Enter email you want to add: {RESET}")
+        if email in [e.value for e in record.emails]:
+            return f"{contact_name} already has this email - {email}. Try again!"
+        email_to_add = email
+    else:
+        email_to_add = args[1]
+    address_book.find(contact_name).add_email(email_to_add)
+    return f"New email added to {contact_name} - {email_to_add}"
 
 
 @input_error
@@ -217,7 +228,7 @@ def change_email(*args):
 def delete_email(*args):
     contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     record:Record = address_book.data[contact_name]
     if args[1:]:
         emails_to_delete = args[1:]
@@ -236,14 +247,14 @@ def add_adress(*args):
     contact_name = args[0]
     record:Record = address_book.data[contact_name]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     if len(args) <= 1:
         adress_to_add = [input(f"{GREEN}Enter adress: {RESET}")]
     else:
         adress_to_add = args[1:]
     if len(adress_to_add[0].strip()) < 1:
         raise ValueError
-    if record.adress:
+    if hasattr(record, 'adress'):
         ask = input(f"{GREEN}Previous {contact_name} adress '{record.adress}' will be deleted. Print 'y' to accept: {RESET}")
         if not "y" in ask.lower():
             raise ValueError
@@ -256,13 +267,14 @@ def add_adress(*args):
 def change_adress(*args):
     contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     if len(args) <= 1:
         new_adress = [input(f"{GREEN}Enter adress: {RESET}")]
+        new_adress = new_adress[0].split(" ")
         if len(new_adress[0]) < 1:
             raise IndexError
         else:
-            new_adress = ' '.join(str(e).capitalize() for e in new_adress[0])
+            new_adress = ' '.join(str(e).capitalize() for e in new_adress)
     else:
         new_adress = ' '.join(str(e).capitalize() for e in args[1:])
     record:Record = address_book.data[contact_name]
@@ -272,9 +284,10 @@ def change_adress(*args):
 
 
 @input_error
-def delete_adress(contact_name):
+def delete_adress(*args):
+    contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     record:Record = address_book.data[contact_name]
     record.delete_adress()
     return GREEN + f"{contact_name}`s adress was succesfully deleted!" + RESET
