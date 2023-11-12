@@ -40,7 +40,7 @@ def input_error(func):
         except TypeError:
             result = "Sorry, I do not understand."
         else:
-            return f'{GREEN}{result}{RESET}'
+            return result
         return f'{RED}{result}{RESET}'
     return inner
 
@@ -159,7 +159,7 @@ def random_search(*args):
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
-        folder = input(f"{GREEN}Enter the folder name: {RESET}")
+        folder = input(f"{BLUE}Enter the folder name: {RESET}")
         if not folder:
             raise IndexError
     else:
