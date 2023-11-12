@@ -109,11 +109,17 @@ class AddressBook(UserDict):
         for i in range(0, len(self), n):
             yield islice(self.data.values(), i, i+n)
             
-    def bd_in_XX_days(self, days):
+    def bd_in_XX_days(self, days: int) -> GeneratorType:
+        ''' вертає всі контакти, у яких день народження за {days} днів'''
         suit_lst = []
         for rec in self.data.values():
-            suit_lst.append(rec) if rec.days_to_birthday < int(days) else ...
-        return suit_lst if suit_lst else f"Noone has birthday in {days} days!"
+            if rec.days_to_birthday < days:
+                suit_lst.append(rec)
+        if not suit_lst:
+            suit_lst.append(f"Noone has birthday in {days} days!")
+        for i in range(0, len(suit_lst)):
+            yield islice(suit_lst, i, i+1)
+            
 
     def save(self, filename="book.dat", format='bin'):
         ''' TODO: format selection and using different formats '''

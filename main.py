@@ -38,7 +38,9 @@ def input_error(func):
             result = "Not enough parameters."
         except TypeError:
             result = "Sorry, I do not understand."
-        return "{}{}{}".format(RED,result,RESET)
+        else:
+            return result
+        return f'{RED}{result}{RESET}'
     return inner
 
 def hello(*args):
@@ -154,8 +156,9 @@ def random_search(*args):
 
 @input_error
 def birthday_in_XX_days(*args):
-    return address_book.bd_in_XX_days(args[0])
-    
+    ''' знайти всі контакти, у яких день народження за XX днів'''
+    return address_book.bd_in_XX_days(int(args[0]))
+
 
 address_book = AddressBook()
 
