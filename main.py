@@ -167,7 +167,12 @@ def add_note():
 @input_error
 def find_note():
     find_func = input(f"Select search by {GREEN}[t]{RESET}ags or {GREEN}[n]{RESET}otes.")
-    use_func = find_by_tag if find_func == "t" else find_by_note
+    if find_func in "tags":
+        use_func = find_by_tag 
+    elif find_func in "notes":
+        use_func = find_by_note
+    else:
+        return f"{RED}You must select to search by tags or notes!{RESET}"
     request = input("Print what you search: ")
     res = use_func(request)
     return res if res else f"{RED}No notes found for this request!{RESET}"
