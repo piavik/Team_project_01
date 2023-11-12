@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 
 class Field:
@@ -51,3 +52,30 @@ class Birthday(Field):
 
     def __str__(self):
         return datetime.strftime(self.__value, '%d %B')
+    
+class Adress(Field):
+    ''' Клас для зберігання адреси контакту. '''
+    @property
+    def value(self) -> str:
+        return self.__value
+    
+    @value.setter
+    def value(self, value) -> None:
+        self.__value = value
+
+class Email(Field):
+    ''' Клас для зберігання Електронних скриньок. '''
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, new_email: str):
+        ''' Вбудована перевірка, має бути формат електронної скриньки '''
+        result = re.findall(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)', new_email)
+        if not new_email in result:
+            raise ValueError
+        self.__value = new_email   
+
+    def __str__(self):
+        return self.__value
