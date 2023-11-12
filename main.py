@@ -243,7 +243,7 @@ def add_adress(*args):
         adress_to_add = args[1:]
     if len(adress_to_add[0].strip()) < 1:
         raise ValueError
-    if record.adress:
+    if hasattr(record, 'adress'):
         ask = input(f"{GREEN}Previous {contact_name} adress '{record.adress}' will be deleted. Print 'y' to accept: {RESET}")
         if not "y" in ask.lower():
             raise ValueError
