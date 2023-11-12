@@ -217,7 +217,7 @@ def change_email(*args):
 def delete_email(*args):
     contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     record:Record = address_book.data[contact_name]
     if args[1:]:
         emails_to_delete = args[1:]
@@ -236,7 +236,7 @@ def add_adress(*args):
     contact_name = args[0]
     record:Record = address_book.data[contact_name]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     if len(args) <= 1:
         adress_to_add = [input(f"{GREEN}Enter adress: {RESET}")]
     else:
@@ -256,7 +256,7 @@ def add_adress(*args):
 def change_adress(*args):
     contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     if len(args) <= 1:
         new_adress = [input(f"{GREEN}Enter adress: {RESET}")]
         new_adress = new_adress[0].split(" ")
@@ -276,7 +276,7 @@ def change_adress(*args):
 def delete_adress(*args):
     contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     record:Record = address_book.data[contact_name]
     record.delete_adress()
     return GREEN + f"{contact_name}`s adress was succesfully deleted!" + RESET
