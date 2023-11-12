@@ -336,6 +336,8 @@ def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
         folder = input(f"{GREEN}Enter the folder name: {RESET}")
+        if not folder:
+            raise IndexError
     else:
         folder = args[0]
     return folder_sort.main(folder)

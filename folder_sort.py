@@ -100,7 +100,7 @@ def main(folder:str) -> str:
 
     if not path.exists():
         # return f'directory {path} does not exist. '
-        raise ValueError
+        raise KeyError
 
     initialize_translation_table()
 
