@@ -203,7 +203,11 @@ def find_note_to_func():
 @input_error
 def change_note():
     found_notes, indx = find_note_to_func()
-    changed_note = input("Write changed note: ") 
+    changed_note = input("Write changed note: ")
+    if not changed_note:
+        request = input("Do you want save blank note?(y or n): ")
+        if request != "y":
+            return f"{RED}Note wasn't changed!{RESET}"
     found_notes[int(indx)-1].edit_note(changed_note)
     return f"{GREEN}Note was changed!{RESET}"
 
