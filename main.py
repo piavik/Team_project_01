@@ -90,6 +90,12 @@ def help_(*args):
     That's all it can do.
     Maybe in the future it will be extended, but there are doubts about it.
     Use it as is, or just quit.
+
+
+
+
+
+    gghhjjkl;
     """ + RESET
 
 def unknown_command(*args):
