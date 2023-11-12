@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 
 class Field:
@@ -46,8 +47,39 @@ class Birthday(Field):
         Вбудована перевірка, має бути правильний формат дати YYYY-MM-DD
         '''
         # TODO: Перевіряємо декілька варіантів формату дати:
-        self.__value = datetime.strptime(new_date, '%Y-%m-%d').date()
+        today = datetime.now().date()
+        date_to_check = datetime.strptime(new_date, '%Y-%m-%d').date()
+        if today < date_to_check:
+            raise ValueError
+        self.__value = date_to_check
 
 
     def __str__(self):
         return datetime.strftime(self.__value, '%d %B')
+    
+class Adress(Field):
+    ''' Клас для зберігання адреси контакту. '''
+    @property
+    def value(self) -> str:
+        return self.__value
+    
+    @value.setter
+    def value(self, value) -> None:
+        self.__value = value
+
+class Email(Field):
+    ''' Клас для зберігання Електронних скриньок. '''
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, new_email: str):
+        ''' Вбудована перевірка, має бути формат електронної скриньки '''
+        result = re.findall(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)', new_email)
+        if not new_email in result:
+            raise ValueError
+        self.__value = new_email   
+
+    def __str__(self):
+        return self.__value
