@@ -42,7 +42,6 @@ def input_error(func):
             result = f"{RED}Sorry, I do not understand.{RESET}"
         else:
             return result
-            return result
         return f'{RED}{result}{RESET}'
     return inner
 
