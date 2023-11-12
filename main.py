@@ -322,9 +322,9 @@ def birthday_in_XX_days(*args):
 
 @input_error
 def add_note():
-    note = input("Print note: ")
+    note = input("Please enter new note: ")
     note_rec = NoteRecord(note)
-    tags = input("Print tags: ")
+    tags = input("Please enter note tags: ")
     note_rec.add_tags(tags.split(", ") if "," in tags else tags.split(" "))
     add_record(note_rec)
     save_notes()
@@ -334,12 +334,12 @@ def add_note():
 def find_note():
     find_func = input(f"Select search by {GREEN}[t]{RESET}ags or {GREEN}[n]{RESET}otes.")
     if find_func in "tags":
-        use_func = find_by_tag 
+        use_func = find_by_tag
     elif find_func in "notes":
         use_func = find_by_note
     else:
-        return f"{RED}You must select to search by tags or notes!{RESET}"
-    request = input("Print what you search: ")
+        return f"{RED}You must choose: search by tags or notes!{RESET}"
+    request = input("What would you like to find: ")
     res = use_func(request)
     return res if res else f"{RED}No notes found for this request!{RESET}"
 
@@ -353,7 +353,7 @@ def find_note_to_func():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input("Write the number of the note you want to edit: ")
+        indx = input("Please enter the number of the note you want to edit: ")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
@@ -362,25 +362,25 @@ def find_note_to_func():
 @input_error
 def change_note():
     found_notes, indx = find_note_to_func()
-    changed_note = input("Write changed note: ")
+    changed_note = input("Please enter the changed note: ")
     if not changed_note:
-        request = input("Do you want save blank note?(y or n): ")
+        request = input(f"Do you want save a blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if request != "y":
             return f"{RED}Note wasn't changed!{RESET}"
     found_notes[int(indx)-1].edit_note(changed_note)
-    return f"{GREEN}Note was changed!{RESET}"
+    return f"{BLUE}Note was changed!{RESET}"
 
 @input_error
 def add_tags():
     found_notes, indx = find_note_to_func()
-    new_tags = input("Write tags you want to add: ")
+    new_tags = input("Please enter the tags you want to add: ")
     found_notes[int(indx)-1].add_tags(new_tags.split(", ") if "," in new_tags else new_tags.split(" "))
-    return f"{GREEN}Tags were added!{RESET}"
+    return f"{BLUE}Tags were added!{RESET}"
 
 @input_error
 def delete_tags():
     found_notes, indx = find_note_to_func()
-    tags_to_del = input("Write tags you want to delete: ")
+    tags_to_del = input("Please enter the tags you want to delete: ")
     found_notes[int(indx)-1].del_tags(tags_to_del.split(", ") if "," in tags_to_del else tags_to_del.split(" "))
     return f"{RED}Tags were deleted!{RESET}"
 
@@ -394,21 +394,21 @@ def del_note():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input("Write the number of the note you want to delete: ")
+        indx = input("Please enter the number of the note you want to delete: ")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
-    check = input("Are you sure you want to delete this entry?(y or n): ")
+    check = input("Are you sure you want to delete this entry? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
     if check == "y":
         delete_note(found_notes[int(indx)-1])
         return f"{RED}Note was deleted!{RESET}"
     else:
-        return f"{RED}Note wasn't delete!{RESET}"
+        return f"{RED}Note was not deleted!{RESET}"
         
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
-        folder = input(f"{BLUE}Enter the folder name: {RESET}")
+        folder = input("Please enter the folder name: ")
         if not folder:
             raise IndexError
     else:
@@ -446,7 +446,6 @@ OPERATIONS = {
                 "delete birthday": delete_birthday,
                 "delete note": del_note,
                 "delete tags": delete_tags,
-
                 "delete": delete_phone,
                 # "d": debug_,
                 "load": restore_data_from_file,
