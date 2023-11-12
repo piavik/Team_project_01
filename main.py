@@ -1,6 +1,7 @@
-from classes import Record, AddressBook, Email
-from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
 from types import GeneratorType
+from datetime import datetime
+from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
+from classes import Record, AddressBook, Email
 import folder_sort
 
 
@@ -33,7 +34,7 @@ def input_error(func):
         try:
             result = func(*args)
         except KeyError:
-            result = f"{RED}Not found. Unknown record.{RESET}"
+            result = f"{RED}Not found.{RESET}"
         except ValueError:
             result = f"{RED}Entered incorrect data{RESET}"
         except IndexError:
@@ -49,32 +50,75 @@ def hello(*args):
     return BLUE + "How can I help you?" + RESET
 
 @input_error
-def add_(contact_name, new_phone, birthday=None):
-    # with "birthday" field it is necessary to remove the feature 
-    # to add several phones at a time
-    # so phones are added one by one now
-    # if exist - we add phone to the list, not replace
+def add_phone(contact_name: str, *args, **kwargs) -> str:
+    if len(args) > 0:
+        new_phone = args[0]
+    else:
+        new_phone = input(f'{GREEN}Please enter the phone number (10 digits): {RESET}')
+    # if contact exist - we add phone to the list, not replace
     if contact_name in address_book.data.keys():
-        record:Record = address_book.data[contact_name]
-        if birthday:
-            record.add_birthday(birthday)
+        record = address_book.data[contact_name]
         record.add_phone(new_phone)
     else:
         record = Record(contact_name)
-        if birthday:
-            record.add_birthday(birthday)
         record.add_phone(new_phone)
         address_book.add_record(record)
-    message = f"\n{GREEN}Record added:\n{RESET}Name: {record.name.value}\nphone: {new_phone}"
+    #this should be corrected when there are other fields added
+    if len(args) >=2 :
+        birthday = args[1]
+        record.add_birthday(birthday)
+    message = f"\n{GREEN}Record added:\n  {RESET}Name: {record.name.value}\n  phone: {new_phone}"
+    return message
+
+@input_error
+def add_birthday(contact_name: str, *args, **kwargs) -> str:
+    if len(args) > 0:
+        birthday = args[0]
+    else:
+        birthday = input(f'{GREEN}Please enter birthday (YYYY-MM-DD): {RESET}')
+    if contact_name in address_book.data.keys():
+        record = address_book.data[contact_name]
+        record.add_birthday(birthday)
+    else:
+        # entered date instead of contact name
+        if datetime.strptime(contact_name, '%Y-%m-%d'):
+            raise ValueError
+        record = Record(contact_name)
+        record.add_birthday(birthday)
+        address_book.add_record(record)
+    message = f"\n{GREEN}Record added:\n  {RESET}Name: {record.name.value}\n  birthday: {birthday}"
     return message
 
 @input_error
 def change_phone(*args):
-    contact_name = args[0]
-    old_phone, new_phone = args[1:]
+    if len(args) == 1:
+        contact_name = args[0]
+    else: 
+        contact_name = input(f'{GREEN}Please enter contact name: {RESET}')
     record = address_book.data[contact_name]
+    if len(args) == 3:
+        old_phone, new_phone = args[1:2]
+    else:
+        old_phone = input(f'{GREEN}Please enter old number: {RESET}')
+        if not old_phone in record.phones:
+            raise KeyError
+        new_phone = input(f'{GREEN}Please enter new number (10 digits): {RESET}')
     record.edit_phone(old_phone, new_phone)
-    return f"\n{GREEN}Changed:\n  {RESET}{record.name.value}\n  {old_phone} to {new_phone}"
+    return f"\n{GREEN}Changed:\n  {RESET}Name: {record.name.value}\n  Phone: {old_phone} to {new_phone}"
+
+@input_error
+def change_birthday(*args):
+    if len(args) > 0:
+        contact_name = args[0]
+    else:
+        contact_name = input(f'{GREEN}Please enter contact name: {RESET}')
+    record = address_book.data[contact_name]
+    if len(args) == 3:
+        old_birthday, new_birthday = args[1:]
+    else:
+        new_birthday = input(f'{GREEN}Please enter new birthday date (YYYY-MM-DD): {RESET}')
+    record.add_birthday(new_birthday)
+    return f"\n{GREEN}Changed to:{RESET} {new_birthday}"
 
 @input_error
 def get_phone(*args):
@@ -100,7 +144,7 @@ def delete_phone(*args):
     contact_name = args[0]
     # name not in book
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     # check if phone provided
     if args[1:]:
         # phone provided, so removing phone only
@@ -112,6 +156,16 @@ def delete_phone(*args):
         # no phone, remove whole record
         address_book.delete(contact_name)
     return GREEN + "removed" + RESET
+
+@input_error
+def delete_birthday(*args):
+    contact_name = args[0]
+    # name not in book
+    if contact_name not in list(address_book.data.keys()):
+        raise KeyError
+    record = address_book.data[contact_name]
+    delattr(record, "birthday")
+    return f'{GREEN} Removed {RESET}'
 
 def restore_data_from_file(*args, file_name=FILENAME) -> str:
     ''' restore AddressBook object from the file '''
@@ -349,7 +403,9 @@ address_book = AddressBook()
 OPERATIONS = {
                 "hello": hello,
                 "help": help_,
-                "add phone": add_,
+                "?": help_,
+                "add phone": add_phone,
+                "add birthday": add_birthday,
                 "add note": add_note,
                 "add tags": add_tags,
                 "add email": add_email,
@@ -358,16 +414,20 @@ OPERATIONS = {
                 "add adress": add_adress,
                 "change adress": change_adress,
                 "delete adress": delete_adress,
-                "add": add_,
+                "add": add_phone,
                 "change phone": change_phone,
+                "change birthday": change_birthday,
                 "change note": change_note,
                 "change": change_phone, 
                 "get contact": get_phone,
                 "get": get_phone,
                 "all": all_contacts,
                 "show all": all_contacts,
+                "delete phone": delete_phone,
+                "delete birthday": delete_birthday,
                 "delete note": del_note,
                 "delete tags": delete_tags,
+
                 "delete": delete_phone,
                 # "d": debug_,
                 "load": restore_data_from_file,
