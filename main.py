@@ -273,7 +273,8 @@ def change_adress(*args):
 
 
 @input_error
-def delete_adress(contact_name):
+def delete_adress(*args):
+    contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
         raise ValueError
     record:Record = address_book.data[contact_name]
