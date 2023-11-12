@@ -1,5 +1,6 @@
 from classes import Record, AddressBook
 from types import GeneratorType
+import folder_sort
 
 
 RED = "\033[91m"
@@ -67,7 +68,7 @@ def add_(contact_name, new_phone, birthday=None):
     return message
 
 @input_error
-def change(*args):
+def change_phone(*args):
     contact_name = args[0]
     old_phone, new_phone = args[1:]
     record = address_book.data[contact_name]
@@ -78,7 +79,7 @@ def change(*args):
 def get_phone(*args):
     return address_book.find(args[0])
 
-def all_(N=3, *args):
+def all_contacts(N=3, *args):
     return address_book.iterator(N)
 
 def help_(*args):
@@ -132,7 +133,7 @@ def save_data_to_file(file_name=FILENAME, *args):
     address_book.save(file_name)
     return f"{GREEN}Saved to {file_name}{RESET}"
 
-@input_error
+# @input_error
 def random_search(*args):
     search = args[0]
     # do not search if less than 3 symbols entered
@@ -159,6 +160,14 @@ def birthday_in_XX_days(*args):
     ''' знайти всі контакти, у яких день народження за XX днів'''
     return address_book.bd_in_XX_days(int(args[0]))
 
+def sort_folder(*args):
+    ''' Sort files from a single folder into categorized folders '''
+    if not args:
+        folder = input(f"{GREEN}Enter the folder name: {RESET}")
+    else:
+        folder = args[0]
+    return folder_sort.main(folder)
+
 
 address_book = AddressBook()
 
@@ -174,25 +183,25 @@ OPERATIONS = {
                 "add phone": add_,
                 "add": add_,
                 "set": add_,
-                "change entry": change,
-                "change record": change,
-                "change number": change,
-                "change phone": change,
-                "change": change, 
+                "change entry": change_phone,
+                "change record": change_phone,
+                "change number": change_phone,
+                "change phone": change_phone,
+                "change": change_phone, 
                 "get entry": get_phone,
                 "get record": get_phone,
                 "get number": get_phone,
                 "get phone": get_phone,
-                "get all": all_,
+                "get all": all_contacts,
                 "get": get_phone,
                 "show number": get_phone,
                 "show phone": get_phone,
-                "all": all_,
-                "show all": all_,
+                "all": all_contacts,
+                "show all": all_contacts,
                 "show": get_phone,
-                "list all": all_,
-                "full": all_,
-                "list": all_,
+                "list all": all_contacts,
+                "full": all_contacts,
+                "list": all_contacts,
                 "del": delete_phone,
                 "delete": delete_phone,
                 "remove": delete_phone,
@@ -204,6 +213,8 @@ OPERATIONS = {
                 "search for": random_search,
                 "search": random_search,
                 "birthdays": birthday_in_XX_days,
+                "sort folder": sort_folder,
+                "sort": sort_folder
               }
 
 def parse(input_text: str):
@@ -218,16 +229,17 @@ def parse(input_text: str):
 def main():
     ''' main cycle'''
     # file_name = restore_data_from_file()
-    entered_file_name = input(f"From what file info should be fetched (default is '{FILENAME}')? ").lower()
-    file_name = FILENAME if entered_file_name == '' else entered_file_name
+    # entered_file_name = input(f"From what file info should be fetched (default is '{FILENAME}')? ").lower()
+    #file_name = FILENAME if entered_file_name == '' else entered_file_name
+    file_name = FILENAME
     address_book.load(file_name)
     while True:
         input_ = input(">>>").lower()
         # check if user want to stop, strip() - just in case :)
         if input_.strip() in STOP_WORDS:
-            print(f"{GREEN}See you, bye!{RESET}")
             # TODO: format dependent
             save_data_to_file(file_name)
+            print(f"{GREEN}See you, bye!{RESET}")
             break
         # check for empty input, do nothing
         if input_.strip() == '':
@@ -241,6 +253,7 @@ def main():
             for _selection in command_to_run:
                 for _entry in _selection:
                     print(_entry)
+                    print('----------')
                 _ = input(f"{BLUE}....Press Enter to continue....{RESET}")
         else:
             print(f'{RESET}{command_to_run}')

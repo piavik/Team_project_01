@@ -106,6 +106,10 @@ class AddressBook(UserDict):
 
     def iterator(self, n=2) -> GeneratorType:
         ''' generator '''
+        try:
+            n = int(n)
+        except ValueError:
+            n = 2
         for i in range(0, len(self), n):
             yield islice(self.data.values(), i, i+n)
             
