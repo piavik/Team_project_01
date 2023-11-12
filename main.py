@@ -1,5 +1,7 @@
 from classes import Record, AddressBook, Email
+from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
 from types import GeneratorType
+import folder_sort
 
 
 RED = "\033[91m"
@@ -31,14 +33,16 @@ def input_error(func):
         try:
             result = func(*args)
         except KeyError:
-            result = "Not found. Unknown record."
+            result = f"{RED}Not found. Unknown record.{RESET}"
         except ValueError:
-            result = "Entered incorrect data"
+            result = f"{RED}Entered incorrect data{RESET}"
         except IndexError:
-            result = "Not enough parameters."
+            result = f"{RED}Not enough parameters.{RESET}"
         except TypeError:
-            result = "Sorry, I do not understand."
-        return "{}{}{}".format(RED,result,RESET)
+            result = f"{RED}Sorry, I do not understand.{RESET}"
+        else:
+            return result
+        return f'{RED}{result}{RESET}'
     return inner
 
 def hello(*args):
@@ -65,7 +69,7 @@ def add_(contact_name, new_phone, birthday=None):
     return message
 
 @input_error
-def change(*args):
+def change_phone(*args):
     contact_name = args[0]
     old_phone, new_phone = args[1:]
     record = address_book.data[contact_name]
@@ -76,7 +80,7 @@ def change(*args):
 def get_phone(*args):
     return address_book.find(args[0])
 
-def all_(N=3, *args):
+def all_contacts(N=3, *args):
     return address_book.iterator(N)
 
 def help_(*args):
@@ -222,7 +226,7 @@ def delete_adress(contact_name):
     return GREEN + f"{contact_name}`s adress was succesfully deleted!" + RESET
 
 
-@input_error
+# @input_error
 def random_search(*args):
     search = args[0]
     # do not search if less than 3 symbols entered
@@ -244,6 +248,99 @@ def random_search(*args):
                 search_result.add_record(record)
     return search_result.iterator(2)
 
+@input_error
+def birthday_in_XX_days(*args):
+    ''' знайти всі контакти, у яких день народження за XX днів'''
+    return address_book.bd_in_XX_days(int(args[0]))
+
+def add_note():
+    note = input("Print note: ")
+    note_rec = NoteRecord(note)
+    tags = input("Print tags: ")
+    note_rec.add_tags(tags.split(", ") if "," in tags else tags.split(" "))
+    add_record(note_rec)
+    save_notes()
+    return f"{GREEN}The note was saved!{RESET}"
+
+@input_error
+def find_note():
+    find_func = input(f"Select search by {GREEN}[t]{RESET}ags or {GREEN}[n]{RESET}otes.")
+    if find_func in "tags":
+        use_func = find_by_tag 
+    elif find_func in "notes":
+        use_func = find_by_note
+    else:
+        return f"{RED}You must select to search by tags or notes!{RESET}"
+    request = input("Print what you search: ")
+    res = use_func(request)
+    return res if res else f"{RED}No notes found for this request!{RESET}"
+
+@input_error
+def find_note_to_func():
+    num = 1
+    found_notes = find_note()
+    if isinstance(found_notes, str):
+        return found_notes
+    elif len(found_notes) > 1:
+        for rec in found_notes:
+            print(f"{num}. {rec.note}")
+            num += 1
+        indx = input("Write the number of the note you want to edit: ")
+    elif len(found_notes) == 1:
+        indx = 1
+    print(found_notes[int(indx)-1])
+    return found_notes, indx
+
+@input_error
+def change_note():
+    found_notes, indx = find_note_to_func()
+    changed_note = input("Write changed note: ") 
+    found_notes[int(indx)-1].edit_note(changed_note)
+    return f"{GREEN}Note was changed!{RESET}"
+
+@input_error
+def add_tags():
+    found_notes, indx = find_note_to_func()
+    new_tags = input("Write tags you want to add: ")
+    found_notes[int(indx)-1].add_tags(new_tags.split(", ") if "," in new_tags else new_tags.split(" "))
+    return f"{GREEN}Tags were added!{RESET}"
+
+def delete_tags():
+    found_notes, indx = find_note_to_func()
+    tags_to_del = input("Write tags you want to delete: ")
+    found_notes[int(indx)-1].del_tags(tags_to_del.split(", ") if "," in tags_to_del else tags_to_del.split(" "))
+    return f"{RED}Tags were deleted!{RESET}"
+
+@input_error
+def del_note():
+    num = 1
+    found_notes = find_note()
+    if isinstance(found_notes, str):
+        return found_notes
+    elif len(found_notes) > 1:
+        for rec in found_notes:
+            print(f"{num}. {rec.note}")
+            num += 1
+        indx = input("Write the number of the note you want to delete: ")
+    elif len(found_notes) == 1:
+        indx = 1
+    print(found_notes[int(indx)-1])
+    check = input("Are you sure you want to delete this entry?(y or n): ")
+    if check in "yes":
+        delete_note(found_notes[int(indx)-1])
+        return f"{RED}Note was deleted!{RESET}"
+    else:
+        return f"{RED}Note wasn't delete!{RESET}"
+        
+def sort_folder(*args):
+    ''' Sort files from a single folder into categorized folders '''
+    if not args:
+        folder = input(f"{GREEN}Enter the folder name: {RESET}")
+    else:
+        folder = args[0]
+    return folder_sort.main(folder)
+
+
 address_book = AddressBook()
 
 # order MATTERS!!!! Single word command must be in the end !
@@ -256,6 +353,8 @@ OPERATIONS = {
                 "add record": add_,
                 "add number": add_,
                 "add phone": add_,
+                "add note": add_note,
+                "add tags": add_tags,
                 "add email": add_email,
                 "change email": change_email,
                 "delete email": delete_email,
@@ -264,25 +363,30 @@ OPERATIONS = {
                 "delete adress": delete_adress,
                 "add": add_,
                 "set": add_,
-                "change entry": change,
-                "change record": change,
-                "change number": change,
-                "change phone": change,
-                "change": change, 
+                "change entry": change_phone,
+                "change record": change_phone,
+                "change number": change_phone,
+                "change phone": change_phone,
+                "change note": change_note,
+                "change": change_phone, 
                 "get entry": get_phone,
                 "get record": get_phone,
                 "get number": get_phone,
                 "get phone": get_phone,
-                "get all": all_,
+                "get all": all_contacts,
                 "get": get_phone,
                 "show number": get_phone,
                 "show phone": get_phone,
-                "all": all_,
-                "show all": all_,
+                "all": all_contacts,
+                "show all": all_contacts,
                 "show": get_phone,
-                "list all": all_,
-                "full": all_,
-                "list": all_,
+                "list all": all_contacts,
+                "full": all_contacts,
+                "list": all_contacts,
+                "delete note": del_note,
+                "del note": del_note,
+                "delete tags": delete_tags,
+                "del tags": delete_tags,
                 "del": delete_phone,
                 "delete": delete_phone,
                 "remove": delete_phone,
@@ -290,9 +394,14 @@ OPERATIONS = {
                 "read": restore_data_from_file,
                 "load": restore_data_from_file,
                 "save": save_data_to_file,
+                "find note": find_note,
                 "find": random_search,
+                "sort notes": sort_notes,
                 "search for": random_search,
                 "search": random_search,
+                "birthdays": birthday_in_XX_days,
+                "sort folder": sort_folder,
+                "sort": sort_folder
               }
 
 def parse(input_text: str):
@@ -307,16 +416,19 @@ def parse(input_text: str):
 def main():
     ''' main cycle'''
     # file_name = restore_data_from_file()
-    entered_file_name = input(f"From what file info should be fetched (default is '{FILENAME}')? ").lower()
-    file_name = FILENAME if entered_file_name == '' else entered_file_name
+    # entered_file_name = input(f"From what file info should be fetched (default is '{FILENAME}')? ").lower()
+    #file_name = FILENAME if entered_file_name == '' else entered_file_name
+    file_name = FILENAME
     address_book.load(file_name)
+    load_notes()
     while True:
         input_ = input(">>>").lower()
         # check if user want to stop, strip() - just in case :)
         if input_.strip() in STOP_WORDS:
-            print(f"{GREEN}See you, bye!{RESET}")
             # TODO: format dependent
             save_data_to_file(file_name)
+            save_notes()
+            print(f"{GREEN}See you, bye!{RESET}")
             break
         # check for empty input, do nothing
         if input_.strip() == '':
@@ -330,7 +442,11 @@ def main():
             for _selection in command_to_run:
                 for _entry in _selection:
                     print(_entry)
+                    print('----------')
                 _ = input(f"{BLUE}....Press Enter to continue....{RESET}")
+        elif isinstance(command_to_run, list):
+            for rec in command_to_run:
+                print(rec)
         else:
             print(f'{RESET}{command_to_run}')
 
