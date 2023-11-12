@@ -142,9 +142,15 @@ def add_email(*args):
 @input_error
 def change_email(*args):
     contact_name = args[0]
-    old_email = args[1]
-    new_email = args[2]
     record:Record = address_book.data[contact_name]
+    if len(args) <= 1:
+        old_email = input(f"{GREEN}Enter email you want to change: {RESET}")
+        if old_email not in [e.value for e in record.emails]:
+            return f"{contact_name} don`t have this email - {old_email}. Try again!"
+        new_email = input(f"{GREEN}Enter new email: {RESET}")
+    else:
+        old_email = args[1]
+        new_email = args[2]
     record.change_email(old_email, new_email)
     return f"\n{GREEN}{record.name.value}'s email changed:\n  {RESET}{old_email} to {new_email}"
 
@@ -154,36 +160,58 @@ def delete_email(*args):
     contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
         raise ValueError
+    record:Record = address_book.data[contact_name]
     if args[1:]:
         emails_to_delete = args[1:]
-        record:Record = address_book.data[contact_name]
-        for email in emails_to_delete:
-            record.delete_email(email)
     else:
-        address_book.delete(contact_name)
-    return GREEN + f"{contact_name}'s emails removed" + RESET
+        emails_to_delete = [input(f"{GREEN}Enter email: {RESET}")]
+    for email in emails_to_delete:
+        if email not in [e.value for e in record.emails]:
+            return f"{contact_name} don`t have this email!"
+        else:
+            record.delete_email(email)
+    return GREEN + f"{contact_name}'s emails deleted" + RESET
 
 
 @input_error
 def add_adress(*args):
-    name = args[0]
-    adress_to_add = ' '.join(str(e) for e in args[1:])
-    address_book.find(name).add_adress(adress_to_add)
-    return f"New adress added to {name} - {adress_to_add}"
+    contact_name = args[0]
+    record:Record = address_book.data[contact_name]
+    if contact_name not in list(address_book.data.keys()):
+        raise ValueError
+    if len(args) <= 1:
+        adress_to_add = [input(f"{GREEN}Enter adress: {RESET}")]
+    else:
+        adress_to_add = args[1:]
+    if len(adress_to_add[0].strip()) < 1:
+        raise ValueError
+    if record.adress:
+        ask = input(f"{GREEN}Previous {contact_name} adress '{record.adress}' will be deleted. Print 'y' to accept: {RESET}")
+        if not "y" in ask.lower():
+            raise ValueError
+    adress = ' '.join(str(e).capitalize() for e in adress_to_add)
+    address_book.find(contact_name).add_adress(adress)
+    return f"New adress added to {contact_name} - {adress}"
 
 
+@input_error
 def change_adress(*args):
     contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
         raise ValueError
-    if args[1:]:
-        new_adress = ' '.join(str(e) for e in args[1:])
-        record:Record = address_book.data[contact_name]
-        record.delete_adress()
-        record.add_adress(new_adress)
+    if len(args) <= 1:
+        new_adress = [input(f"{GREEN}Enter adress: {RESET}")]
+        if new_adress[0] < 1:
+            raise IndexError
+    else:
+        new_adress = ' '.join(str(e).capitalize for e in args[1:])
+    record:Record = address_book.data[contact_name]
+    record.delete_adress()
+    record.add_adress(new_adress)
     return GREEN + f"{contact_name} has new adress:\n{new_adress}" + RESET
 
 
+@input_error
 def delete_adress(contact_name):
     if contact_name not in list(address_book.data.keys()):
         raise ValueError
