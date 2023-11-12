@@ -162,6 +162,7 @@ def birthday_in_XX_days(*args):
     ''' знайти всі контакти, у яких день народження за XX днів'''
     return address_book.bd_in_XX_days(int(args[0]))
 
+@input_error
 def add_note():
     note = input("Print note: ")
     note_rec = NoteRecord(note)
@@ -214,6 +215,7 @@ def add_tags():
     found_notes[int(indx)-1].add_tags(new_tags.split(", ") if "," in new_tags else new_tags.split(" "))
     return f"{GREEN}Tags were added!{RESET}"
 
+@input_error
 def delete_tags():
     found_notes, indx = find_note_to_func()
     tags_to_del = input("Write tags you want to delete: ")
@@ -235,7 +237,7 @@ def del_note():
         indx = 1
     print(found_notes[int(indx)-1])
     check = input("Are you sure you want to delete this entry?(y or n): ")
-    if check in "yes":
+    if check == "y":
         delete_note(found_notes[int(indx)-1])
         return f"{RED}Note was deleted!{RESET}"
     else:
