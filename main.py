@@ -389,7 +389,9 @@ def del_note():
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
-        folder = input(f"{GREEN}Enter the folder name: {RESET}")
+        folder = input(f"{BLUE}Enter the folder name: {RESET}")
+        if not folder:
+            raise IndexError
     else:
         folder = args[0]
     return folder_sort.main(folder)
@@ -400,12 +402,8 @@ address_book = AddressBook()
 # order MATTERS!!!! Single word command must be in the end !
 OPERATIONS = {
                 "hello": hello,
-                "hi": hello,
                 "help": help_,
-                "?": hello,
-                "add entry": add_phone,
-                "add record": add_phone,
-                "add number": add_phone,
+                "?": help_,
                 "add phone": add_phone,
                 "add birthday": add_birthday,
                 "add note": add_note,
@@ -417,50 +415,28 @@ OPERATIONS = {
                 "change adress": change_adress,
                 "delete adress": delete_adress,
                 "add": add_phone,
-                "change entry": change_phone,
-                "change record": change_phone,
-                "change number": change_phone,
                 "change phone": change_phone,
                 "change birthday": change_birthday,
                 "change note": change_note,
                 "change": change_phone, 
-                "get entry": get_phone,
-                "get record": get_phone,
-                "get number": get_phone,
-                "get phone": get_phone,
-                "get all": all_contacts,
+                "get contact": get_phone,
                 "get": get_phone,
-                "show number": get_phone,
-                "show phone": get_phone,
                 "all": all_contacts,
                 "show all": all_contacts,
-                "show": get_phone,
-                "list all": all_contacts,
-                "full": all_contacts,
-                "list": all_contacts,
-                "del phone": delete_phone,
                 "delete phone": delete_phone,
                 "delete birthday": delete_birthday,
-                "del birthday": delete_birthday,
                 "delete note": del_note,
-                "del note": del_note,
                 "delete tags": delete_tags,
-                "del tags": delete_tags,
+
                 "delete": delete_phone,
-                "del": delete_phone,
-                "remove": delete_phone,
                 # "d": debug_,
-                "read": restore_data_from_file,
                 "load": restore_data_from_file,
                 "save": save_data_to_file,
                 "find note": find_note,
                 "find": random_search,
                 "sort notes": sort_notes,
-                "search for": random_search,
-                "search": random_search,
                 "birthdays": birthday_in_XX_days,
-                "sort folder": sort_folder,
-                "sort": sort_folder
+                "sort folder": sort_folder
               }
 
 def parse(input_text: str):
