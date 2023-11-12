@@ -26,10 +26,6 @@ STOP_WORDS = [
                 'pa',
                 'q'
             ]
-ALL_COMMANDS = ["exit", "hello", "help", "add", "add entry", "add record", "add number", "add phone", "set", "change entry", "change record", "change number",
-                "change phone", "change", "get entry", "get record", "get number", "get phone", "get all", "get", "show number", "show phone", "all", "show all", "show", 
-                "list all", "full", "list", "del", "delete", "remove", "read", "load", "save", "find", "search for", "search", "sort folder", "sort"]
-command_completer = WordCompleter(ALL_COMMANDS)
 
 def input_error(func):
     ''' 
@@ -443,6 +439,9 @@ OPERATIONS = {
                 "birthdays": birthday_in_XX_days,
                 "sort folder": sort_folder
               }
+
+ALL_COMMANDS = OPERATIONS.keys()
+command_completer = WordCompleter(ALL_COMMANDS)
 
 def parse(input_text: str):
     # itereate over keywords dict, not over input words !!!
