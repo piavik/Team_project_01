@@ -259,10 +259,11 @@ def change_adress(*args):
         raise ValueError
     if len(args) <= 1:
         new_adress = [input(f"{GREEN}Enter adress: {RESET}")]
+        new_adress = new_adress[0].split(" ")
         if len(new_adress[0]) < 1:
             raise IndexError
         else:
-            new_adress = ' '.join(str(e).capitalize() for e in new_adress[0])
+            new_adress = ' '.join(str(e).capitalize() for e in new_adress)
     else:
         new_adress = ' '.join(str(e).capitalize() for e in args[1:])
     record:Record = address_book.data[contact_name]
