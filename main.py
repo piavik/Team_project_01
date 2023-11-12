@@ -111,9 +111,10 @@ def help_(*args):
                          If the contact does not exist, a new contact is created.
         "change email" - (name, old email and new email) - change email.
         "delete email" - (name) -  remove email from contact.
-        "add adress"   - (name and address) - add address to contact.
-        "change adress"- (name and new address) - change address.
-        "delete adress"- (name and address) - delete adress from contact.
+        "add address"   - (name and address) - add address to contact.
+        "change address"- (name and new address) - change address.
+        "delete address"- (name and address) - delete adress from contact.
+        "exit"          - the end of the work.
     Commands to work with notes:     
         "add note"     - add notes.
         "add tags"     - add tags.
