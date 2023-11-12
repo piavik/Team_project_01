@@ -143,7 +143,7 @@ def delete_phone(*args):
     contact_name = args[0]
     # name not in book
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     # check if phone provided
     if args[1:]:
         # phone provided, so removing phone only
@@ -155,6 +155,16 @@ def delete_phone(*args):
         # no phone, remove whole record
         address_book.delete(contact_name)
     return GREEN + "removed" + RESET
+
+@input_error
+def delete_birthday(*args):
+    contact_name = args[0]
+    # name not in book
+    if contact_name not in list(address_book.data.keys()):
+        raise KeyError
+    record = address_book.data[contact_name]
+    delattr(record, "birthday")
+    return f'{GREEN} Removed {RESET}'
 
 def restore_data_from_file(*args, file_name=FILENAME) -> str:
     ''' restore AddressBook object from the file '''
@@ -244,6 +254,10 @@ OPERATIONS = {
                 "list all": all_contacts,
                 "full": all_contacts,
                 "list": all_contacts,
+                "del phone": delete_phone,
+                "delete phone": delete_phone,
+                "delete birthday": delete_birthday,
+                "del birthday": delete_birthday,
                 "delete": delete_phone,
                 "del": delete_phone,
                 "remove": delete_phone,
