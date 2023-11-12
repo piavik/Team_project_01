@@ -113,6 +113,8 @@ class AddressBook(UserDict):
         ''' вертає всі контакти, у яких день народження за {days} днів'''
         suit_lst = []
         for rec in self.data.values():
+            if not hasattr(rec, "birthday"):
+                continue
             if rec.days_to_birthday < days:
                 suit_lst.append(rec)
         if not suit_lst:
