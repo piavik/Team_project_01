@@ -198,7 +198,7 @@ def add_email(*args):
     if len(args) <= 1:
         email = input(f"{GREEN}Enter email you want to add: {RESET}")
         if email in [e.value for e in record.emails]:
-            return f"{contact_name} already has this email - {email}. Try again!"
+            return f"{RED}{contact_name} already has this email - {email}. Try again!{RESET}"
         email_to_add = email
     else:
         email_to_add = args[1]
@@ -213,7 +213,7 @@ def change_email(*args):
     if len(args) <= 1:
         old_email = input(f"{GREEN}Enter email you want to change: {RESET}")
         if old_email not in [e.value for e in record.emails]:
-            return f"{contact_name} don`t have this email - {old_email}. Try again!"
+            return f"{RED}{contact_name} don`t have this email - {old_email}. Try again!{RESET}"
         new_email = input(f"{GREEN}Enter new email: {RESET}")
     else:
         old_email = args[1]
@@ -234,7 +234,7 @@ def delete_email(*args):
         emails_to_delete = [input(f"{GREEN}Enter email: {RESET}")]
     for email in emails_to_delete:
         if email not in [e.value for e in record.emails]:
-            return f"{contact_name} don`t have this email!"
+            return f"{RED}{contact_name} don`t have this email!{RESET}"
         else:
             record.delete_email(email)
     return GREEN + f"{contact_name}'s emails deleted" + RESET
@@ -287,6 +287,8 @@ def delete_adress(*args):
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     record:Record = address_book.data[contact_name]
+    if not hasattr(record, "adress"):
+        return f"{RED}{contact_name} don't have address to delete!{RESET}"
     record.delete_adress()
     return GREEN + f"{contact_name}`s adress was succesfully deleted!" + RESET
 
