@@ -396,7 +396,7 @@ def del_note():
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
-    check = input("Are you sure you want to delete this entry? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+    check = input(f"Are you sure you want to delete this entry? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
     if check == "y":
         delete_note(found_notes[int(indx)-1])
         return f"{RED}Note was deleted!{RESET}"
