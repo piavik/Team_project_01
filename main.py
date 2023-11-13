@@ -3,7 +3,7 @@ from datetime import datetime
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
-from classes import Record, AddressBook, Email
+from classes import Record, AddressBook
 import folder_sort
 
 
@@ -35,27 +35,27 @@ def input_error(func):
         try:
             result = func(*args)
         except KeyError:
-            result = f"{RED}Not found.{RESET}"
+            result = "Not found."
         except ValueError:
-            result = f"{RED}Entered incorrect data{RESET}"
+            result = "Entered incorrect data."
         except IndexError:
-            result = f"{RED}Not enough parameters.{RESET}"
+            result = "Not enough parameters."
         except TypeError:
-            result = f"{RED}Sorry, I do not understand.{RESET}"
+            result = "Sorry, I do not understand."
         else:
             return result
         return f'{RED}{result}{RESET}'
     return inner
 
 def hello(*args):
-    return BLUE + "How can I help you?" + RESET
+    return f'{BLUE}How can I help you?{RESET}'
 
 @input_error
 def add_phone(contact_name: str, *args, **kwargs) -> str:
     if len(args) > 0:
         new_phone = args[0]
     else:
-        new_phone = input(f'{GREEN}Please enter the phone number (10 digits): {RESET}')
+        new_phone = input(f'{BLUE}Please enter the phone number ({GREEN}10 digits{BLUE}): {RESET}')
     # if contact exist - we add phone to the list, not replace
     if contact_name in address_book.data.keys():
         record = address_book.data[contact_name]
@@ -68,7 +68,7 @@ def add_phone(contact_name: str, *args, **kwargs) -> str:
     if len(args) >=2 :
         birthday = args[1]
         record.add_birthday(birthday)
-    message = f"\n{GREEN}Record added:\n  {RESET}Name: {record.name.value}\n  phone: {new_phone}"
+    message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{record.name.value}\n  {BLUE}Phone: {RESET}{new_phone}"
     return message
 
 @input_error
@@ -76,7 +76,7 @@ def add_birthday(contact_name: str, *args, **kwargs) -> str:
     if len(args) > 0:
         birthday = args[0]
     else:
-        birthday = input(f'{GREEN}Please enter birthday (YYYY-MM-DD): {RESET}')
+        birthday = input(f'{BLUE}Please enter birthday ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
     if contact_name in address_book.data.keys():
         record = address_book.data[contact_name]
         record.add_birthday(birthday)
@@ -87,7 +87,7 @@ def add_birthday(contact_name: str, *args, **kwargs) -> str:
         record = Record(contact_name)
         record.add_birthday(birthday)
         address_book.add_record(record)
-    message = f"\n{GREEN}Record added:\n  {RESET}Name: {record.name.value}\n  birthday: {birthday}"
+    message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{record.name.value}\n  {BLUE}Birthday: {RESET}{birthday}"
     return message
 
 @input_error
@@ -95,29 +95,29 @@ def change_phone(*args):
     if len(args) == 1:
         contact_name = args[0]
     else: 
-        contact_name = input(f'{GREEN}Please enter contact name: {RESET}')
+        contact_name = input(f'{BLUE}Please enter contact name: {RESET}')
     record = address_book.data[contact_name]
     if len(args) == 3:
         old_phone, new_phone = args[1:2]
     else:
-        old_phone = input(f'{GREEN}Please enter old number: {RESET}')
+        old_phone = input(f'{BLUE}Please enter old number: {RESET}')
         if not old_phone in record.phones:
             raise KeyError
-        new_phone = input(f'{GREEN}Please enter new number (10 digits): {RESET}')
+        new_phone = input(f'{BLUE}Please enter new number ({GREEN}10 digits{BLUE}): {RESET}')
     record.edit_phone(old_phone, new_phone)
-    return f"\n{GREEN}Changed:\n  {RESET}Name: {record.name.value}\n  Phone: {old_phone} to {new_phone}"
+    return f"\n{GREEN}Changed:\n  {BLUE}Phone: {RESET}{old_phone} --> {new_phone}"
 
 @input_error
 def change_birthday(*args):
     if len(args) > 0:
         contact_name = args[0]
     else:
-        contact_name = input(f'{GREEN}Please enter contact name: {RESET}')
+        contact_name = input(f'{BLUE}Please enter contact name: {RESET}')
     record = address_book.data[contact_name]
     if len(args) == 3:
         old_birthday, new_birthday = args[1:]
     else:
-        new_birthday = input(f'{GREEN}Please enter new birthday date (YYYY-MM-DD): {RESET}')
+        new_birthday = input(f'{BLUE}Please enter new birthday date ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
     record.add_birthday(new_birthday)
     return f"\n{GREEN}Changed to:{RESET} {new_birthday}"
 
@@ -153,7 +153,7 @@ def delete_phone(*args):
     else:
         # no phone, remove whole record
         address_book.delete(contact_name)
-    return GREEN + "removed" + RESET
+    return f'{GREEN}Removed.{RESET}'
 
 @input_error
 def delete_birthday(*args):
@@ -163,11 +163,10 @@ def delete_birthday(*args):
         raise KeyError
     record = address_book.data[contact_name]
     delattr(record, "birthday")
-    return f'{GREEN} Removed {RESET}'
+    return f'{GREEN}Removed.{RESET}'
 
 def restore_data_from_file(*args, file_name=FILENAME) -> str:
     ''' restore AddressBook object from the file '''
-
     # TODO: format selection
     # check if filename provided as non-default argument, else -> request, if empty -> set default
     # if file_name == FILENAME:
@@ -190,20 +189,20 @@ def save_data_to_file(file_name=FILENAME, *args):
 @input_error
 def add_email(*args):
     if len(args) < 1:
-        contact = input(f"{GREEN}Enter name: {RESET}")
+        contact = input(f"{BLUE}Please enter the name: {RESET}")
         contact_name = contact
     else:
         contact_name = args[0]
     record:Record = address_book.data[contact_name]
     if len(args) <= 1:
-        email = input(f"{GREEN}Enter email you want to add: {RESET}")
+        email = input(f"{BLUE}Please enter the email: {RESET}")
         if email in [e.value for e in record.emails]:
-            return f"{contact_name} already has this email - {email}. Try again!"
+            return f"{GREEN}{contact_name} already has this email: {RESET}{email} {BLUE}Skipping...{RESET}"
         email_to_add = email
     else:
         email_to_add = args[1]
     address_book.find(contact_name).add_email(email_to_add)
-    return f"New email added to {contact_name} - {email_to_add}"
+    return f"{GREEN}Added: {RESET}{email_to_add}"
 
 
 @input_error
@@ -211,15 +210,15 @@ def change_email(*args):
     contact_name = args[0]
     record:Record = address_book.data[contact_name]
     if len(args) <= 1:
-        old_email = input(f"{GREEN}Enter email you want to change: {RESET}")
+        old_email = input(f"{BLUE}Please enter email you want to change: {RESET}")
         if old_email not in [e.value for e in record.emails]:
-            return f"{contact_name} don`t have this email - {old_email}. Try again!"
-        new_email = input(f"{GREEN}Enter new email: {RESET}")
+            return f"{GREEN}{contact_name} does not have {RESET}{old_email} {BLUE}Skipping...{RESET}"
+        new_email = input(f"{BLUE}Please enter new email: {RESET}")
     else:
         old_email = args[1]
         new_email = args[2]
     record.change_email(old_email, new_email)
-    return f"\n{GREEN}{record.name.value}'s email changed:\n  {RESET}{old_email} to {new_email}"
+    return f"\n{GREEN}Email changed:\n  {RESET}{old_email} --> {new_email}"
 
 
 @input_error
@@ -231,13 +230,13 @@ def delete_email(*args):
     if args[1:]:
         emails_to_delete = args[1:]
     else:
-        emails_to_delete = [input(f"{GREEN}Enter email: {RESET}")]
+        emails_to_delete = [input(f"{BLUE}Please enter email: {RESET}")]
     for email in emails_to_delete:
         if email not in [e.value for e in record.emails]:
-            return f"{contact_name} don`t have this email!"
+            return f"{RED}{contact_name} does not have such email.{RESET} {BLUE}Skipping...{RESET}"
         else:
             record.delete_email(email)
-    return GREEN + f"{contact_name}'s emails deleted" + RESET
+    return f'{BLUE}Done.{RESET}'
 
 
 @input_error
@@ -247,18 +246,18 @@ def add_adress(*args):
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     if len(args) <= 1:
-        adress_to_add = [input(f"{GREEN}Enter adress: {RESET}")]
+        adress_to_add = [input(f"{BLUE}Enter adress: {RESET}")]
     else:
         adress_to_add = args[1:]
     if len(adress_to_add[0].strip()) < 1:
         raise ValueError
     if hasattr(record, 'adress'):
-        ask = input(f"{GREEN}Previous {contact_name} adress '{record.adress}' will be deleted. Print 'y' to accept: {RESET}")
+        ask = input(f"{BLUE}Previous adress '{record.adress}' will be deleted. OK? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: {RESET}")
         if not "y" in ask.lower():
             raise ValueError
     adress = ' '.join(str(e).capitalize() for e in adress_to_add)
     address_book.find(contact_name).add_adress(adress)
-    return f"New adress added to {contact_name} - {adress}"
+    return f"{BLUE}New adress added: {RESET}{adress}"
 
 
 @input_error
@@ -267,7 +266,7 @@ def change_adress(*args):
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     if len(args) <= 1:
-        new_adress = [input(f"{GREEN}Enter adress: {RESET}")]
+        new_adress = [input(f"{BLUE}Please enter adress: {RESET}")]
         new_adress = new_adress[0].split(" ")
         if len(new_adress[0]) < 1:
             raise IndexError
@@ -278,7 +277,7 @@ def change_adress(*args):
     record:Record = address_book.data[contact_name]
     record.delete_adress()
     record.add_adress(new_adress)
-    return GREEN + f"{contact_name} has new adress:\n{new_adress}" + RESET
+    return f'{BLUE}New adress:\n{RESET}{new_adress}'
 
 
 @input_error
@@ -288,7 +287,7 @@ def delete_adress(*args):
         raise KeyError
     record:Record = address_book.data[contact_name]
     record.delete_adress()
-    return GREEN + f"{contact_name}`s adress was succesfully deleted!" + RESET
+    return f'{BLUE}Done.{RESET}'
 
 
 @input_error
@@ -322,17 +321,17 @@ def random_search(*args) -> GeneratorType:
 @input_error
 def birthday_in_XX_days(*args):
     ''' знайти всі контакти, у яких день народження за XX днів'''
-    return address_book.bd_in_XX_days(int(args[0]))
+    return address_book.bd_in_xx_days(int(args[0]))
 
 @input_error
 def add_note():
-    note = input("Please enter new note: ")
+    note = input(f"{BLUE}Please enter new note: {RESET}")
     note_rec = NoteRecord(note)
-    tags = input("Please enter note tags: ")
+    tags = input(f"{BLUE}Please enter note tags: {RESET}")
     note_rec.add_tags(tags.split(", ") if "," in tags else tags.split(" "))
     add_record(note_rec)
     save_notes()
-    return f"{GREEN}The note was saved!{RESET}"
+    return f"{GREEN}The note was saved.{RESET}"
 
 @input_error
 def find_note():
@@ -343,9 +342,11 @@ def find_note():
         use_func = find_by_note
     else:
         return f"{RED}You must choose: search by tags or notes!{RESET}"
-    request = input("What would you like to find: ")
+    request = input(f"{BLUE}Searching for: {RESET}")
     res = use_func(request)
-    return res if res else f"{RED}No notes found for this request!{RESET}"
+    if not res:
+        raise KeyError
+    return res
 
 @input_error
 def find_note_to_func():
@@ -357,7 +358,7 @@ def find_note_to_func():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input("Please enter the number of the note you want to edit: ")
+        indx = input("{BLUE}Please enter the number of the note you want to edit: {RESET}")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
@@ -366,27 +367,27 @@ def find_note_to_func():
 @input_error
 def change_note():
     found_notes, indx = find_note_to_func()
-    changed_note = input("Please enter the changed note: ")
+    changed_note = input(f"{BLUE}Please enter the note to change: {RESET}")
     if not changed_note:
-        request = input(f"Do you want save a blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+        request = input(f"{RED}Do you want save a blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if request != "y":
-            return f"{RED}Note wasn't changed!{RESET}"
+            return f"{RED}Note was not not changed.{RESET}"
     found_notes[int(indx)-1].edit_note(changed_note)
-    return f"{BLUE}Note was changed!{RESET}"
+    return f"{GREEN}The note was changed.{RESET}"
 
 @input_error
 def add_tags():
     found_notes, indx = find_note_to_func()
-    new_tags = input("Please enter the tags you want to add: ")
+    new_tags = input(f"{BLUE}Please enter the tags you want to add: {RESET}")
     found_notes[int(indx)-1].add_tags(new_tags.split(", ") if "," in new_tags else new_tags.split(" "))
-    return f"{BLUE}Tags were added!{RESET}"
+    return f"{GREEN}Tags were added.{RESET}"
 
 @input_error
 def delete_tags():
     found_notes, indx = find_note_to_func()
-    tags_to_del = input("Please enter the tags you want to delete: ")
+    tags_to_del = input(f"{BLUE}Please enter the tags you want to delete: {RESET}")
     found_notes[int(indx)-1].del_tags(tags_to_del.split(", ") if "," in tags_to_del else tags_to_del.split(" "))
-    return f"{RED}Tags were deleted!{RESET}"
+    return f"{GREEN}Done.{RESET}"
 
 @input_error
 def del_note():
@@ -398,21 +399,21 @@ def del_note():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input("Please enter the number of the note you want to delete: ")
+        indx = input(f"{BLUE}Please enter the number of the note you want to delete: {RESET}")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
-    check = input("Are you sure you want to delete this entry? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+    check = input(f"{RED}Are you sure you want to delete this entry? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
     if check == "y":
         delete_note(found_notes[int(indx)-1])
-        return f"{RED}Note was deleted!{RESET}"
+        return f"{GREEN}Note was deleted.{RESET}"
     else:
         return f"{RED}Note was not deleted!{RESET}"
         
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
-        folder = input("Please enter the folder name: ")
+        folder = input(f"{BLUE}Please enter the folder name: {RESET}")
         if not folder:
             raise IndexError
     else:
@@ -505,7 +506,7 @@ def main():
                 for _entry in _selection:
                     print(_entry)
                     print('----------')
-                _ = input(f"{BLUE}....Press Enter to continue....{RESET}")
+                _ = input(f"{RESET}....Press {BLUE}Enter{RESET} to continue....\n")
         elif isinstance(command_to_run, list):
             for rec in command_to_run:
                 print(rec)
