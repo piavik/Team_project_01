@@ -1,5 +1,7 @@
 from types import GeneratorType
 from datetime import datetime
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import WordCompleter
 from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
 from classes import Record, AddressBook, Email
 import folder_sort
@@ -24,7 +26,6 @@ STOP_WORDS = [
                 'pa',
                 'q'
             ]
-
 
 def input_error(func):
     ''' 
@@ -191,10 +192,21 @@ def save_data_to_file(file_name=FILENAME, *args):
 
 @input_error
 def add_email(*args):
-    name = args[0]
-    email_to_add = args[1]
-    address_book.find(name).add_email(email_to_add)
-    return f"New email added to {name} - {email_to_add}"
+    if len(args) < 1:
+        contact = input(f"{GREEN}Enter name: {RESET}")
+        contact_name = contact
+    else:
+        contact_name = args[0]
+    record:Record = address_book.data[contact_name]
+    if len(args) <= 1:
+        email = input(f"{GREEN}Enter email you want to add: {RESET}")
+        if email in [e.value for e in record.emails]:
+            return f"{contact_name} already has this email - {email}. Try again!"
+        email_to_add = email
+    else:
+        email_to_add = args[1]
+    address_book.find(contact_name).add_email(email_to_add)
+    return f"New email added to {contact_name} - {email_to_add}"
 
 
 @input_error
@@ -217,7 +229,7 @@ def change_email(*args):
 def delete_email(*args):
     contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     record:Record = address_book.data[contact_name]
     if args[1:]:
         emails_to_delete = args[1:]
@@ -236,14 +248,14 @@ def add_adress(*args):
     contact_name = args[0]
     record:Record = address_book.data[contact_name]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     if len(args) <= 1:
         adress_to_add = [input(f"{GREEN}Enter adress: {RESET}")]
     else:
         adress_to_add = args[1:]
     if len(adress_to_add[0].strip()) < 1:
         raise ValueError
-    if record.adress:
+    if hasattr(record, 'adress'):
         ask = input(f"{GREEN}Previous {contact_name} adress '{record.adress}' will be deleted. Print 'y' to accept: {RESET}")
         if not "y" in ask.lower():
             raise ValueError
@@ -256,13 +268,14 @@ def add_adress(*args):
 def change_adress(*args):
     contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     if len(args) <= 1:
         new_adress = [input(f"{GREEN}Enter adress: {RESET}")]
+        new_adress = new_adress[0].split(" ")
         if len(new_adress[0]) < 1:
             raise IndexError
         else:
-            new_adress = ' '.join(str(e).capitalize() for e in new_adress[0])
+            new_adress = ' '.join(str(e).capitalize() for e in new_adress)
     else:
         new_adress = ' '.join(str(e).capitalize() for e in args[1:])
     record:Record = address_book.data[contact_name]
@@ -272,9 +285,10 @@ def change_adress(*args):
 
 
 @input_error
-def delete_adress(contact_name):
+def delete_adress(*args):
+    contact_name = args[0]
     if contact_name not in list(address_book.data.keys()):
-        raise ValueError
+        raise KeyError
     record:Record = address_book.data[contact_name]
     record.delete_adress()
     return GREEN + f"{contact_name}`s adress was succesfully deleted!" + RESET
@@ -307,10 +321,11 @@ def birthday_in_XX_days(*args):
     ''' знайти всі контакти, у яких день народження за XX днів'''
     return address_book.bd_in_XX_days(int(args[0]))
 
+@input_error
 def add_note():
-    note = input("Print note: ")
+    note = input("Please enter new note: ")
     note_rec = NoteRecord(note)
-    tags = input("Print tags: ")
+    tags = input("Please enter note tags: ")
     note_rec.add_tags(tags.split(", ") if "," in tags else tags.split(" "))
     add_record(note_rec)
     save_notes()
@@ -320,12 +335,12 @@ def add_note():
 def find_note():
     find_func = input(f"Select search by {GREEN}[t]{RESET}ags or {GREEN}[n]{RESET}otes.")
     if find_func in "tags":
-        use_func = find_by_tag 
+        use_func = find_by_tag
     elif find_func in "notes":
         use_func = find_by_note
     else:
-        return f"{RED}You must select to search by tags or notes!{RESET}"
-    request = input("Print what you search: ")
+        return f"{RED}You must choose: search by tags or notes!{RESET}"
+    request = input("What would you like to find: ")
     res = use_func(request)
     return res if res else f"{RED}No notes found for this request!{RESET}"
 
@@ -339,7 +354,7 @@ def find_note_to_func():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input("Write the number of the note you want to edit: ")
+        indx = input("Please enter the number of the note you want to edit: ")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
@@ -348,20 +363,25 @@ def find_note_to_func():
 @input_error
 def change_note():
     found_notes, indx = find_note_to_func()
-    changed_note = input("Write changed note: ") 
+    changed_note = input("Please enter the changed note: ")
+    if not changed_note:
+        request = input(f"Do you want save a blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+        if request != "y":
+            return f"{RED}Note wasn't changed!{RESET}"
     found_notes[int(indx)-1].edit_note(changed_note)
-    return f"{GREEN}Note was changed!{RESET}"
+    return f"{BLUE}Note was changed!{RESET}"
 
 @input_error
 def add_tags():
     found_notes, indx = find_note_to_func()
-    new_tags = input("Write tags you want to add: ")
+    new_tags = input("Please enter the tags you want to add: ")
     found_notes[int(indx)-1].add_tags(new_tags.split(", ") if "," in new_tags else new_tags.split(" "))
-    return f"{GREEN}Tags were added!{RESET}"
+    return f"{BLUE}Tags were added!{RESET}"
 
+@input_error
 def delete_tags():
     found_notes, indx = find_note_to_func()
-    tags_to_del = input("Write tags you want to delete: ")
+    tags_to_del = input("Please enter the tags you want to delete: ")
     found_notes[int(indx)-1].del_tags(tags_to_del.split(", ") if "," in tags_to_del else tags_to_del.split(" "))
     return f"{RED}Tags were deleted!{RESET}"
 
@@ -375,21 +395,21 @@ def del_note():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input("Write the number of the note you want to delete: ")
+        indx = input("Please enter the number of the note you want to delete: ")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
-    check = input("Are you sure you want to delete this entry?(y or n): ")
-    if check in "yes":
+    check = input("Are you sure you want to delete this entry? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+    if check == "y":
         delete_note(found_notes[int(indx)-1])
         return f"{RED}Note was deleted!{RESET}"
     else:
-        return f"{RED}Note wasn't delete!{RESET}"
+        return f"{RED}Note was not deleted!{RESET}"
         
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
-        folder = input(f"{BLUE}Enter the folder name: {RESET}")
+        folder = input("Please enter the folder name: ")
         if not folder:
             raise IndexError
     else:
@@ -409,15 +429,13 @@ OPERATIONS = {
                 "add note": add_note,
                 "add tags": add_tags,
                 "add email": add_email,
-                "change email": change_email,
-                "delete email": delete_email,
-                "add adress": add_adress,
-                "change adress": change_adress,
-                "delete adress": delete_adress,
+                "add address": add_adress,
                 "add": add_phone,
+                "change address": change_adress,
                 "change phone": change_phone,
                 "change birthday": change_birthday,
                 "change note": change_note,
+                "change email": change_email,
                 "change": change_phone, 
                 "get contact": get_phone,
                 "get": get_phone,
@@ -427,17 +445,22 @@ OPERATIONS = {
                 "delete birthday": delete_birthday,
                 "delete note": del_note,
                 "delete tags": delete_tags,
-
+                "delete address": delete_adress,
+                "delete email": delete_email,
                 "delete": delete_phone,
                 # "d": debug_,
                 "load": restore_data_from_file,
                 "save": save_data_to_file,
                 "find note": find_note,
                 "find": random_search,
+                "search": random_search,
                 "sort notes": sort_notes,
                 "birthdays": birthday_in_XX_days,
                 "sort folder": sort_folder
               }
+
+ALL_COMMANDS = OPERATIONS.keys()
+command_completer = WordCompleter(ALL_COMMANDS)
 
 def parse(input_text: str):
     # itereate over keywords dict, not over input words !!!
@@ -457,7 +480,8 @@ def main():
     address_book.load(file_name)
     load_notes()
     while True:
-        input_ = input(">>>").lower()
+        input_ = prompt(">>> ", completer=command_completer)
+        input_ = input_.lower()
         # check if user want to stop, strip() - just in case :)
         if input_.strip() in STOP_WORDS:
             # TODO: format dependent
