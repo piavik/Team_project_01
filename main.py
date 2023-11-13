@@ -48,7 +48,7 @@ def input_error(func):
     return inner
 
 def hello(*args):
-    return f'{BLUE}How can I help you?{RESET}'
+    return f'{BLUE}Hello, how can I help you?{RESET}'
 
 @input_error
 def add_phone(contact_name: str, *args, **kwargs) -> str:
@@ -129,7 +129,7 @@ def all_contacts(N=3, *args):
     return address_book.iterator(N)
 
 def help_(*args):
-    with open('README.txt', 'r') as fh:
+    with open('README.md', 'r') as fh:
         help_bot = fh.read()
     return help_bot
     
@@ -487,6 +487,7 @@ def main():
     file_name = FILENAME
     address_book.load(file_name)
     load_notes()
+    print(f'{RESET}{hello()}')
     while True:
         input_ = prompt(">>> ", completer=command_completer)
         input_ = input_.lower()
