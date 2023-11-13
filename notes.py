@@ -23,7 +23,7 @@ class NoteRecord():
         self.note = new_note
         
     def __str__(self):
-        return f" {BLUE}Tags:{RESET} {', '.join(self.tags)}\n {BLUE}Note:{RESET} {self.note}\n {BLUE}Date of creation:{RESET} {self.create_date}.\n"
+        return f"{BLUE}Tags:{RESET} {', '.join(self.tags)}\n {BLUE}Note:{RESET} {self.note}\n {BLUE}Date of creation:{RESET} {self.create_date}.\n"
 
 try:
     notes_lst[0]

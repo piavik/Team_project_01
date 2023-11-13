@@ -392,7 +392,7 @@ def del_note():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input("Please enter the number of the note you want to delete: ")
+        indx = input(f"{BLUE}Please enter the number of the note you want to delete: {RESET}")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
