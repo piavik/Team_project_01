@@ -1,5 +1,7 @@
 from types import GeneratorType
 from datetime import datetime
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import WordCompleter
 from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
 from classes import Record, AddressBook, Email
 import folder_sort
@@ -24,7 +26,6 @@ STOP_WORDS = [
                 'pa',
                 'q'
             ]
-
 
 def input_error(func):
     ''' 
@@ -457,6 +458,9 @@ OPERATIONS = {
                 "sort folder": sort_folder
               }
 
+ALL_COMMANDS = OPERATIONS.keys()
+command_completer = WordCompleter(ALL_COMMANDS)
+
 def parse(input_text: str):
     # itereate over keywords dict, not over input words !!!
     for kw, func in OPERATIONS.items():
@@ -475,7 +479,8 @@ def main():
     address_book.load(file_name)
     load_notes()
     while True:
-        input_ = input(">>>").lower()
+        input_ = prompt(">>> ", completer=command_completer)
+        input_ = input_.lower()
         # check if user want to stop, strip() - just in case :)
         if input_.strip() in STOP_WORDS:
             # TODO: format dependent
