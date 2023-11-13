@@ -30,23 +30,23 @@ class Record:
     def __str__(self) -> str:
         #перевіряємо чи є у контакта 'birthday'
         if hasattr(self, 'birthday'):
-            __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'it is TODAY!'
-            __last_part = f"Birthday: {self.birthday}\n{__days_to_bdy}\n"
+            __days_to_bdy = f"{self.days_to_birthday} days to next birthday" if self.days_to_birthday else f'{GREEN}it is TODAY!{RESET}'
+            __last_part = f"{BLUE}Birthday: {RESET}{self.birthday}\n{__days_to_bdy}\n"
         else:
             __last_part = ""
         #перевіряємо чи є у контакта "email", якщо більше одного то пишемо "Emails"
-        if self.emails != []:
+        if self.emails:
             if len(self.emails) > 1:
-                __last_part += f"Emails: {', '.join(e.value for e in self.emails)}\n"
+                __last_part += f"{BLUE}Emails: {RESET}{', '.join(e.value for e in self.emails)}\n"
             elif len(self.emails) == 1:
-                __last_part += f"Email: {self.emails[0]}\n"
+                __last_part += f"{BLUE}Email: {RESET}{self.emails[0]}\n"
         #перевіряємо чи є у контакта "adress"
         if hasattr(self, "adress") and self.adress != "":
-            __last_part += f"Adress: {self.adress}"
+            __last_part += f"{BLUE}Adress: {RESET}{self.adress}"
 
         message = (
-                f"Name: {self.name.value}\n"
-                f"Phones: {', '.join(p.value for p in self.phones)}\n"
+                f"{BLUE}Name: {RESET}{self.name.value}\n"
+                f"{BLUE}Phones: {RESET}{', '.join(p.value for p in self.phones)}\n"
                 f"{__last_part}"
             )
         return message
@@ -88,16 +88,16 @@ class Record:
 
     def delete_adress(self):
         self.adress = ""
-        
+
     def add_email(self, email: str) -> None:
         ''' Додавання email до контакту '''
         if email not in (e.value for e in self.emails):
             self.emails.append(Email(email))
-    
+
     def change_email(self, old_email:str, new_email:str):
         ''' Редагування email контакта '''
         if old_email not in (e.value for e in self.emails):
-            raise ValueError
+            raise KeyError
         for index, email in enumerate(self.emails):
             if email.value == old_email:
                 self.emails[index].value = new_email
@@ -123,15 +123,11 @@ class AddressBook(UserDict):
     ''' Клас для зберігання та управління записами. '''
 
     def add_record(self, record: Record) -> None:
-        '''
-        Додавання запису до self.data.
-        '''
+        ''' Додавання запису до self.data '''
         self.data[record.name.value] = record
 
     def find(self, name: str) -> Record:
-        '''
-        Пошук записів за іменем.
-        '''
+        ''' Пошук записів за іменем '''
         record = self.data.get(name)
         # return record if record else None
         if record:
@@ -140,7 +136,7 @@ class AddressBook(UserDict):
             raise KeyError
 
     def delete(self, name: str) -> None:
-        ''' Видалення записів за іменем. '''
+        ''' Видалення записів за іменем '''
         if name in self.data:
             self.data.pop(name)
 
@@ -152,8 +148,8 @@ class AddressBook(UserDict):
             n = 2
         for i in range(0, len(self), n):
             yield islice(self.data.values(), i, i+n)
-            
-    def bd_in_XX_days(self, days: int) -> GeneratorType:
+
+    def bd_in_xx_days(self, days: int) -> GeneratorType:
         ''' вертає всі контакти, у яких день народження за {days} днів'''
         suit_lst = []
         for rec in self.data.values():
@@ -162,21 +158,21 @@ class AddressBook(UserDict):
             if rec.days_to_birthday < days:
                 suit_lst.append(rec)
         if not suit_lst:
-            suit_lst.append(f"Noone has birthday in {days} days!")
+            suit_lst.append(f"{BLUE}Noone has birthday in {days} days!{RESET}")
         for i in range(0, len(suit_lst)):
             yield islice(suit_lst, i, i+1)
             
 
-    def save(self, filename="book.dat", format='bin'):
+    def save(self, filename="book.dat", format='bin') -> None:
         ''' TODO: format selection and using different formats '''
         with open(filename, 'wb') as fh:
             pickle.dump(self.data, fh)
 
-    def load(self, filename="book.dat", format='bin'):
+    def load(self, filename="book.dat", format='bin') -> None:
         ''' TODO: format selection and using different formats '''
         # check if filename provided as non-default argument, else -> request, if empty -> set default
         try:
             with open(filename, 'rb') as fh:
                 self.data = pickle.load(fh)
         except FileNotFoundError:
-            print(BLUE + "File not found, using new book." + RESET)
+            print(f'{BLUE}File not found, using new book.{RESET}')
