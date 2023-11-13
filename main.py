@@ -291,12 +291,12 @@ def delete_adress(*args):
     return GREEN + f"{contact_name}`s adress was succesfully deleted!" + RESET
 
 
-# @input_error
+@input_error
 def random_search(*args):
     search = args[0]
     # do not search if less than 3 symbols entered
     if len(search) < 3:
-        raise ValueError
+        raise IndexError
     # if search strin is a name:
     # TODO: normalize small/big letters
     search_result = AddressBook()
@@ -311,6 +311,8 @@ def random_search(*args):
         for name, record in address_book.data.items():
             if search in name:
                 search_result.add_record(record)
+    if not search_result:
+        raise KeyError
     return search_result.iterator(2)
 
 @input_error
