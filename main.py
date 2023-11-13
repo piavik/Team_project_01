@@ -458,7 +458,7 @@ OPERATIONS = {
                 "sort folder": sort_folder
               }
 
-ALL_COMMANDS = list(OPERATIONS.keys())
+ALL_COMMANDS = OPERATIONS.keys()
 
 
 def parse(input_text: str):
@@ -478,7 +478,8 @@ def main():
     file_name = FILENAME
     address_book.load(file_name)
     load_notes()
-    command_completer = WordCompleter(ALL_COMMANDS + list(address_book.data.keys()))
+    hints = set(list(ALL_COMMANDS) + list(address_book.data.keys()))
+    command_completer = WordCompleter(hints)
     while True:
         input_ = prompt(">>> ", completer=command_completer)
         input_ = input_.lower()
