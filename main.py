@@ -291,11 +291,15 @@ def delete_adress(*args):
 
 
 @input_error
-def random_search(*args):
+def random_search(*args) -> GeneratorType:
     search = args[0]
     # do not search if less than 3 symbols entered
+    # if first parameter too short and several parameters entered - join all parameters
     if len(search) < 3:
-        raise IndexError
+        if len(' '.join(args)) > 2:
+            search = ' '.join(args)
+        else:
+            raise IndexError
     # if search strin is a name:
     # TODO: normalize small/big letters
     search_result = AddressBook()
@@ -310,6 +314,8 @@ def random_search(*args):
         for name, record in address_book.data.items():
             if search in name:
                 search_result.add_record(record)
+    if not search_result:
+        raise KeyError
     return search_result.iterator(2)
 
 @input_error
