@@ -193,7 +193,9 @@ def add_email(*args):
         contact_name = contact
     else:
         contact_name = args[0]
-    record:Record = address_book.data[contact_name]
+    record = Record(contact_name)
+    if contact_name not in list(address_book.data.keys()):
+        address_book.add_record(record)
     if len(args) <= 1:
         email = input(f"{BLUE}Please enter the email: {RESET}")
         if email in [e.value for e in record.emails]:
