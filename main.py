@@ -52,6 +52,7 @@ def hello(*args):
 
 @input_error
 def add_phone(contact_name: str, *args, **kwargs) -> str:
+    contact_name = contact_name.capitalize()
     if len(args) > 0:
         new_phone = args[0]
     else:
@@ -73,6 +74,7 @@ def add_phone(contact_name: str, *args, **kwargs) -> str:
 
 @input_error
 def add_birthday(contact_name: str, *args, **kwargs) -> str:
+    contact_name = contact_name.capitalize()
     if len(args) > 0:
         birthday = args[0]
     else:
@@ -96,6 +98,7 @@ def change_phone(*args):
         contact_name = args[0]
     else: 
         contact_name = input(f'{GREEN}Please enter contact name: {RESET}')
+    contact_name = contact_name.capitalize()
     record = address_book.data[contact_name]
     if len(args) == 3:
         old_phone, new_phone = args[1:2]
@@ -123,7 +126,7 @@ def change_birthday(*args):
 
 @input_error
 def get_phone(*args):
-    return address_book.find(args[0])
+    return address_book.find(args[0].capitalize())
 
 def all_contacts(N=3, *args):
     return address_book.iterator(N)
@@ -139,7 +142,7 @@ def unknown_command(*args):
 
 @input_error
 def delete_phone(*args):
-    contact_name = args[0]
+    contact_name = args[0].capitalize()
     # name not in book
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
@@ -157,7 +160,7 @@ def delete_phone(*args):
 
 @input_error
 def delete_birthday(*args):
-    contact_name = args[0]
+    contact_name = args[0].capitalize()
     # name not in book
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
@@ -194,6 +197,7 @@ def add_email(*args):
         contact_name = contact
     else:
         contact_name = args[0]
+    contact_name = contact_name.capitalize()
     record:Record = address_book.data[contact_name]
     if len(args) <= 1:
         email = input(f"{GREEN}Enter email you want to add: {RESET}")
@@ -208,7 +212,7 @@ def add_email(*args):
 
 @input_error
 def change_email(*args):
-    contact_name = args[0]
+    contact_name = args[0].capitalize()
     record:Record = address_book.data[contact_name]
     if len(args) <= 1:
         old_email = input(f"{GREEN}Enter email you want to change: {RESET}")
@@ -224,7 +228,7 @@ def change_email(*args):
 
 @input_error
 def delete_email(*args):
-    contact_name = args[0]
+    contact_name = args[0].capitalize()
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     record:Record = address_book.data[contact_name]
@@ -242,7 +246,7 @@ def delete_email(*args):
 
 @input_error
 def add_adress(*args):
-    contact_name = args[0]
+    contact_name = args[0].capitalize()
     record:Record = address_book.data[contact_name]
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
@@ -263,7 +267,7 @@ def add_adress(*args):
 
 @input_error
 def change_adress(*args):
-    contact_name = args[0]
+    contact_name = args[0].capitalize()
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     if len(args) <= 1:
@@ -283,7 +287,7 @@ def change_adress(*args):
 
 @input_error
 def delete_adress(*args):
-    contact_name = args[0]
+    contact_name = args[0].capitalize()
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     record:Record = address_book.data[contact_name]
