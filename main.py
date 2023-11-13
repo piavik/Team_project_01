@@ -478,7 +478,7 @@ def main():
     file_name = FILENAME
     address_book.load(file_name)
     load_notes()
-    hints = set(list(ALL_COMMANDS) + list(address_book.data.keys()))
+    hints = set([item for sublist in ALL_COMMANDS for item in str(sublist).strip().split(' ')] + list(address_book.data.keys()))
     command_completer = WordCompleter(hints)
     while True:
         input_ = prompt(">>> ", completer=command_completer)
