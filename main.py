@@ -129,13 +129,10 @@ def all_contacts(N=3, *args):
     return address_book.iterator(N)
 
 def help_(*args):
-    return BLUE + """
-    This is an embrione of a phone book CLI app written in python just for practice.
-    You may add entries or change phone numbers via CLI.
-    That's all it can do.
-    Maybe in the future it will be extended, but there are doubts about it.
-    Use it as is, or just quit.
-    """ + RESET
+    with open('README.txt', 'r') as fh:
+        help_bot = fh.read()
+    return help_bot
+    
 
 def unknown_command(*args):
     return f"{RED}I do not understand, please use correct command.{RESET}"
