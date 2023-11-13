@@ -47,7 +47,11 @@ class Birthday(Field):
         Вбудована перевірка, має бути правильний формат дати YYYY-MM-DD
         '''
         # TODO: Перевіряємо декілька варіантів формату дати:
-        self.__value = datetime.strptime(new_date, '%Y-%m-%d').date()
+        today = datetime.now().date()
+        date_to_check = datetime.strptime(new_date, '%Y-%m-%d').date()
+        if today < date_to_check:
+            raise ValueError
+        self.__value = date_to_check
 
 
     def __str__(self):

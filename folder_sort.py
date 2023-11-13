@@ -4,6 +4,12 @@ import shutil
 import re
 
 
+RED = "\033[91m"
+GREEN = "\033[92m"
+BLUE = "\033[94m"
+RESET = "\033[0m"
+
+
 CATEGORIES = {"Images": [".jpg", ".gif", ".png", ".svg"],
               "Audio": [".mp3", ".wav", ".flac", ".wma", ".ogg", ".amr"],
               "Docs": [".doc", ".docx", ".txt", ".rtf", ".pdf", ".epub", ".xls", ".xlsx", ".ppt", ".pptx"],
@@ -99,8 +105,8 @@ def main(folder:str) -> str:
     path = Path(folder)
 
     if not path.exists():
-        # return f'directory {path} does not exist. '
-        raise KeyError
+        return f'{RED}Directory "{path}" does not exist.{RESET}'
+        # raise KeyError
 
     initialize_translation_table()
 
