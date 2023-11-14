@@ -5,7 +5,7 @@ from prompt_toolkit.completion import WordCompleter
 from Team_project_01.notes import *
 from Team_project_01.classes import *
 import Team_project_01.folder_sort
-
+from Team_project_01.readme import TEXT
 
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -137,10 +137,12 @@ def get_phone(*args):
 def all_contacts(N=3, *args):
     return address_book.iterator(N)
 
+@input_error
 def help_(*args):
-    with open('README.md', 'r') as fh:
-        help_bot = fh.read()
-    return help_bot
+    # with open('README.txt', 'r') as fh:
+    #     help_bot = fh.read()
+    # return help_bot
+    return TEXT
 
 def unknown_command(*args):
     return f"{RED}I do not understand, please use correct command.{RESET}"
@@ -488,7 +490,7 @@ OPERATIONS = {
               }
 
 ALL_COMMANDS = OPERATIONS.keys()
-command_completer = WordCompleter(ALL_COMMANDS)
+command_completer = WordCompleter(ALL_COMMANDS, sentence=True)
 
 def parse(input_text: str):
     # itereate over keywords dict, not over input words !!!

@@ -1,4 +1,4 @@
-
+TEXT = '''
     [92mThis is the CLI Address Book - an application that will simplify your work
     with contact information and save your time for more interesting cases.
     [94mUpdated and improved by "Bot farm " team.
@@ -41,3 +41,4 @@
     [92mCommand to organize files in a folder:[94m
         "sort folder" or "sort" - (name folder) - organize files in the specified folder
     [0m
+    '''
