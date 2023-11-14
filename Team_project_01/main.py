@@ -73,12 +73,16 @@ def add_phone(contact_name: str, *args, **kwargs) -> str:
 
 @input_error
 def add_birthday(contact_name: str, *args, **kwargs) -> str:
+    record:Record = address_book.data[contact_name]
+    if hasattr(record, "birthday"):
+        ask = input(f"{BLUE}Previous birthday '{record.birthday}' will be deleted. OK? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: {RESET}")
+        if "y" not in ask.lower():
+            raise ValueError
     if len(args) > 0:
         birthday = args[0]
     else:
         birthday = input(f'{BLUE}Please enter birthday ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
     if contact_name in address_book.data.keys():
-        record = address_book.data[contact_name]
         record.add_birthday(birthday)
     else:
         # entered date instead of contact name
