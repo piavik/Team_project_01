@@ -51,9 +51,13 @@ def hello(*args):
     return f'{BLUE}Hello, how can I help you?{RESET}'
 
 @input_error
-def add_phone(contact_name: str, *args, **kwargs) -> str:
-    if len(args) > 0:
-        new_phone = args[0]
+def add_phone(*args, **kwargs) -> str:
+    if args:
+        contact_name = args[0]
+    else:
+        contact_name = input(f"{BLUE}Please enter the name: {RESET}")
+    if args[1:]:
+        new_phone = args[1]
     else:
         new_phone = input(f'{BLUE}Please enter the phone number ({GREEN}10 digits{BLUE}): {RESET}')
     # if contact exist - we add phone to the list, not replace
@@ -65,16 +69,20 @@ def add_phone(contact_name: str, *args, **kwargs) -> str:
         record.add_phone(new_phone)
         address_book.add_record(record)
     #this should be corrected when there are other fields added
-    if len(args) >=2 :
-        birthday = args[1]
+    if args[2:]:
+        birthday = args[2]
         record.add_birthday(birthday)
     message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{record.name.value}\n  {BLUE}Phone: {RESET}{new_phone}"
     return message
 
 @input_error
-def add_birthday(contact_name: str, *args, **kwargs) -> str:
-    if len(args) > 0:
-        birthday = args[0]
+def add_birthday(*args, **kwargs) -> str:
+    if args:
+        contact_name = args[0]
+    else:
+        contact_name = input(f"{BLUE}Please enter the name: {RESET}")
+    if args[1:]:
+        birthday = args[1]
     else:
         birthday = input(f'{BLUE}Please enter birthday ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
     if contact_name in address_book.data.keys():
@@ -92,13 +100,14 @@ def add_birthday(contact_name: str, *args, **kwargs) -> str:
 
 @input_error
 def change_phone(*args):
-    if len(args) == 1:
+    if args:
         contact_name = args[0]
-    else: 
+    else:
         contact_name = input(f'{BLUE}Please enter contact name: {RESET}')
     record = address_book.data[contact_name]
-    if len(args) == 3:
-        old_phone, new_phone = args[1:2]
+    if args[2:]:
+        old_phone = args[1]
+        new_phone = args[2]
     else:
         old_phone = input(f'{BLUE}Please enter old number: {RESET}')
         if not old_phone in record.phones:
@@ -109,13 +118,13 @@ def change_phone(*args):
 
 @input_error
 def change_birthday(*args):
-    if len(args) > 0:
+    if args:
         contact_name = args[0]
     else:
         contact_name = input(f'{BLUE}Please enter contact name: {RESET}')
     record = address_book.data[contact_name]
-    if len(args) == 3:
-        old_birthday, new_birthday = args[1:]
+    if args[1:]:
+        new_birthday = args[1]
     else:
         new_birthday = input(f'{BLUE}Please enter new birthday date ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
     record.add_birthday(new_birthday)
@@ -132,14 +141,16 @@ def help_(*args):
     with open('README.md', 'r') as fh:
         help_bot = fh.read()
     return help_bot
-    
 
 def unknown_command(*args):
     return f"{RED}I do not understand, please use correct command.{RESET}"
 
 @input_error
 def delete_phone(*args):
-    contact_name = args[0]
+    if args:
+        contact_name = args[0]
+    else:
+        contact_name = input(f"{BLUE}Please enter the name: {RESET}")
     # name not in book
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
@@ -160,7 +171,10 @@ def delete_phone(*args):
 
 @input_error
 def delete_birthday(*args):
-    contact_name = args[0]
+    if args:
+        contact_name = args[0]
+    else:
+        contact_name = input(f"{BLUE}Please enter the name: {RESET}")
     # name not in book
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
@@ -170,17 +184,6 @@ def delete_birthday(*args):
 
 def restore_data_from_file(*args, file_name=FILENAME) -> str:
     ''' restore AddressBook object from the file '''
-    # TODO: format selection
-    # check if filename provided as non-default argument, else -> request, if empty -> set default
-    # if file_name == FILENAME:
-    #     entered_file_name = input(f"From what file info should be fetched (default is '{FILENAME}')? ").lower()
-    #     if entered_file_name == '':
-    #         file_name = FILENAME
-    # try:
-    #     with open(file_name, 'rb') as fh: 
-    #         address_book.data = pickle.load(fh)
-    # except FileNotFoundError:
-    #     print(BLUE + "File not found, using new file." + RESET)
     address_book.load(file_name)
     return file_name
 
@@ -188,24 +191,22 @@ def save_data_to_file(file_name=FILENAME, *args):
     address_book.save(file_name)
     return f"{GREEN}Saved to {file_name}{RESET}"
 
-
 @input_error
 def add_email(*args):
-    if len(args) < 1:
-        contact = input(f"{BLUE}Please enter the name: {RESET}")
-        contact_name = contact
-    else:
+    if args:
         contact_name = args[0]
+    else:
+        contact_name = input(f"{BLUE}Please enter the name: {RESET}")
     record = Record(contact_name)
     if contact_name not in list(address_book.data.keys()):
         address_book.add_record(record)
-    if len(args) <= 1:
+    if args[1:]:
+        email_to_add = args[1]
+    else:
         email = input(f"{BLUE}Please enter the email: {RESET}")
         if email in [e.value for e in record.emails]:
             return f"{BLUE}{contact_name} already has this email: {RESET}{email} {BLUE}Skipping...{RESET}"
         email_to_add = email
-    else:
-        email_to_add = args[1]
     address_book.find(contact_name).add_email(email_to_add)
     return f"{GREEN}Added: {RESET}{email_to_add}"
 
@@ -214,21 +215,24 @@ def add_email(*args):
 def change_email(*args):
     contact_name = args[0]
     record:Record = address_book.data[contact_name]
-    if len(args) <= 1:
+    if args[2:]:
+        old_email = args[1]
+        new_email = args[2]
+    else:
         old_email = input(f"{BLUE}Please enter email you want to change: {RESET}")
         if old_email not in [e.value for e in record.emails]:
             return f"{BLUE}{contact_name} does not have {RESET}{old_email} {BLUE}Skipping...{RESET}"
         new_email = input(f"{BLUE}Please enter new email: {RESET}")
-    else:
-        old_email = args[1]
-        new_email = args[2]
     record.change_email(old_email, new_email)
     return f"\n{GREEN}Email changed:\n  {RESET}{old_email} --> {new_email}"
 
 
 @input_error
 def delete_email(*args):
-    contact_name = args[0]
+    if args:
+        contact_name = args[0]
+    else:
+        contact_name = input(f"{BLUE}Please enter the name: {RESET}")
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     record:Record = address_book.data[contact_name]
@@ -246,14 +250,17 @@ def delete_email(*args):
 
 @input_error
 def add_adress(*args):
-    contact_name = args[0]
+    if args:
+        contact_name = args[0]
+    else:
+        contact_name = input(f"{BLUE}Please enter the name: {RESET}")
     record:Record = address_book.data[contact_name]
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
-    if len(args) <= 1:
-        adress_to_add = [input(f"{BLUE}Enter adress: {RESET}")]
-    else:
+    if args[1:]:
         adress_to_add = args[1:]
+    else:
+        adress_to_add = [input(f"{BLUE}Enter adress: {RESET}")]
     if len(adress_to_add[0].strip()) < 1:
         raise ValueError
     if hasattr(record, 'adress'):
@@ -267,16 +274,19 @@ def add_adress(*args):
 
 @input_error
 def change_adress(*args):
-    contact_name = args[0]
+    if args:
+        contact_name = args[0]
+    else:
+        contact_name = input(f"{BLUE}Please enter the name: {RESET}")
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     if len(args) <= 1:
         new_adress = [input(f"{BLUE}Please enter new adress: {RESET}")]
         new_adress = new_adress[0].split(" ")
-        if len(new_adress[0]) < 1:
-            raise IndexError
-        else:
+        if new_adress:
             new_adress = ' '.join(str(e).capitalize() for e in new_adress)
+        else:
+            raise IndexError
     else:
         new_adress = ' '.join(str(e).capitalize() for e in args[1:])
     record:Record = address_book.data[contact_name]
@@ -287,7 +297,10 @@ def change_adress(*args):
 
 @input_error
 def delete_adress(*args):
-    contact_name = args[0]
+    if args:
+        contact_name = args[0]
+    else:
+        contact_name = input(f"{BLUE}Please enter the name: {RESET}")
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     record:Record = address_book.data[contact_name]
