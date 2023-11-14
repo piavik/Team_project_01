@@ -71,5 +71,3 @@ def load_notes(filename="notes_book.bin") -> None:
 
 if __name__ == "__main__":
     ...
-    
-    S
