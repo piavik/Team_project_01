@@ -475,7 +475,7 @@ OPERATIONS = {
               }
 
 ALL_COMMANDS = OPERATIONS.keys()
-command_completer = WordCompleter(ALL_COMMANDS)
+command_completer = WordCompleter(ALL_COMMANDS, sentence=True)
 
 def parse(input_text: str):
     # itereate over keywords dict, not over input words !!!
