@@ -116,7 +116,7 @@ def main(folder:str) -> str:
 
     remove_empty_dirs(path)
 
-    return 'All done'
+    return f'{BLUE}All done{RESET}'
 
 
 if __name__ == "__main__":
