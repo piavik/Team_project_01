@@ -152,6 +152,9 @@ def delete_phone(*args):
             record.remove_phone(phone)
     else:
         # no phone, remove whole record
+        res = input(f"{RED}Are you sure you want to delete contact {contact_name}?{GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+        if res != "yes" and res != "y":
+            return f"{RED}Contact wasn't delete!{RESET}"
         address_book.delete(contact_name)
     return f'{GREEN}Removed.{RESET}'
 
@@ -255,7 +258,7 @@ def add_adress(*args):
         raise ValueError
     if hasattr(record, 'adress'):
         ask = input(f"{BLUE}Previous adress '{record.adress}' will be deleted. OK? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: {RESET}")
-        if not "y" in ask.lower():
+        if "y" not in ask.lower():
             raise ValueError
     adress = ' '.join(str(e).capitalize() for e in adress_to_add)
     address_book.find(contact_name).add_adress(adress)
@@ -330,6 +333,10 @@ def birthday_in_XX_days(*args):
 @input_error
 def add_note():
     note = input(f"{BLUE}Please enter new note: {RESET}")
+    if not note:
+        res = input(f"{RED}Are you sure you want to save blank note?{GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+        if res != "y" and res != "yes":
+            return f"{RED}Note wasn't save!{RESET}"
     note_rec = NoteRecord(note)
     tags = input(f"{BLUE}Please enter note tags: {RESET}")
     note_rec.add_tags(tags.split(", ") if "," in tags else tags.split(" "))
