@@ -2,9 +2,9 @@ from types import GeneratorType
 from datetime import datetime
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
-from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
-from classes import Record, AddressBook
-import folder_sort
+from Team_project_01.notes import *
+from Team_project_01.classes import *
+import Team_project_01.folder_sort
 
 
 RED = "\033[91m"
@@ -48,7 +48,7 @@ def input_error(func):
     return inner
 
 def hello(*args):
-    return f'{BLUE}Hello, how can I help you?{RESET}'
+    return f'{BLUE}How can I help you?{RESET}'
 
 @input_error
 def add_phone(contact_name: str, *args, **kwargs) -> str:
@@ -429,7 +429,7 @@ def sort_folder(*args):
             raise IndexError
     else:
         folder = args[0]
-    return folder_sort.main(folder)
+    return Team_project_01.folder_sort.main(folder)
 
 
 address_book = AddressBook()
@@ -475,7 +475,7 @@ OPERATIONS = {
               }
 
 ALL_COMMANDS = OPERATIONS.keys()
-
+command_completer = WordCompleter(ALL_COMMANDS)
 
 def parse(input_text: str):
     # itereate over keywords dict, not over input words !!!
@@ -494,9 +494,6 @@ def main():
     file_name = FILENAME
     address_book.load(file_name)
     load_notes()
-    print(f'{RESET}{hello()}')
-    hints = set([item for sublist in ALL_COMMANDS for item in str(sublist).strip().split(' ')] + list(address_book.data.keys()))
-    command_completer = WordCompleter(hints)
     while True:
         input_ = prompt(">>> ", completer=command_completer)
         input_ = input_.lower()
