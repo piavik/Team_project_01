@@ -14,11 +14,13 @@
         "add phone" or "add"- (name and phone)  - add the phone to the contact. 
                               If the contact is missing create a new 
         "change phone" - (name, old phone, new phone) - edit phone record.
-        "get contact"  - (name) - show all contact information.
-        "delete"       - (name or phone) - delete the contact's phone number or the contct itself
+        "get contakt"  - (name) - show all contact information.
+        "delete"       - (name) - delete a contact.
+        "delete"       - (phone) - delete the phone.
         "load"         - loading of adpes book from file.
         "save"         - saving the address book to a file.
-        "find"         - (string) search for matches in the address book
+        "find"         - (string) search for matches in the address book, 
+                         taking into account all contact fields
         "birthdays"    - (number of days) - show the contacts who have a birthday
                          in the coming days.
         "add email"    - (name and email) - add the email to the contact. 
@@ -32,10 +34,10 @@
         "add note"     - add notes.
         "add tags"     - add tags.
         "change note"  - change notes.
-        "delete note"  - delete notes. 
-        "delete tags"  - remove tags.        
+        "delete note" or "del note" - delete notes. 
+        "delete tags" or "del tags" - remove tags.        
         "find note"    - find note.
         "sort notes"   - sort notes by tag.
     [92mCommand to organize files in a folder:[94m
-        "sort folder"  - (name folder) - organize files in the specified folder
+        "sort folder" or "sort" - (name folder) - organize files in the specified folder
     [0m
