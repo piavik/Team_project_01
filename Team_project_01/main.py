@@ -2,8 +2,8 @@ from types import GeneratorType
 from datetime import datetime
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
-from Team_project_01.notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
-from Team_project_01.classes import Record, AddressBook
+from Team_project_01.notes import *
+from Team_project_01.classes import *
 import Team_project_01.folder_sort
 
 
@@ -422,7 +422,7 @@ def sort_folder(*args):
             raise IndexError
     else:
         folder = args[0]
-    return folder_sort.main(folder)
+    return Team_project_01.folder_sort.main(folder)
 
 
 address_book = AddressBook()
