@@ -3,7 +3,7 @@ from datetime import datetime
 from types import GeneratorType
 from itertools import islice
 import pickle
-from fields import Field, Name, Phone, Birthday, Adress, Email
+from Team_project_01.fields import Field, Name, Phone, Birthday, Adress, Email
 
 
 RED = "\033[91m"

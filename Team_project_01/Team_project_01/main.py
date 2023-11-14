@@ -2,9 +2,9 @@ from types import GeneratorType
 from datetime import datetime
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
-from notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
-from classes import Record, AddressBook
-import folder_sort
+from Team_project_01.notes import NoteRecord, add_record, find_by_tag, find_by_note, delete_note, sort_notes, save_notes, load_notes
+from Team_project_01.classes import Record, AddressBook
+import Team_project_01.folder_sort
 
 
 RED = "\033[91m"
@@ -129,7 +129,7 @@ def all_contacts(N=3, *args):
     return address_book.iterator(N)
 
 def help_(*args):
-    with open('README.txt', 'r') as fh:
+    with open('README.md', 'r') as fh:
         help_bot = fh.read()
     return help_bot
     
