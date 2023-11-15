@@ -1,2 +1,4 @@
 - different date formats
-- 
+- different phone formats on input - with normalize
+- save to custom file/folder
+- save to json/csv

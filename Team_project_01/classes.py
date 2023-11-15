@@ -86,9 +86,6 @@ class Record:
         ''' Додавання адреси до контакту '''
         self.adress = adress
 
-    def delete_adress(self):
-        self.adress = ""
-
     def add_email(self, email: str) -> None:
         ''' Додавання email до контакту '''
         if email not in (e.value for e in self.emails):
