@@ -157,7 +157,7 @@ def delete_phone(*args):
             record.remove_phone(phone)
     else:
         # no phone, remove whole record
-        res = input(f"{RED}Are you sure you want to delete contact {contact_name}?{GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+        res = input(f"{RED}Are you sure you want to delete contact {contact_name}? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if not res.lower() == "y":
             return f"{GREEN}Contact was {RED}not{GREEN} deleted.{RESET}"
         address_book.delete(contact_name)
@@ -336,7 +336,7 @@ def birthday_in_XX_days(*args):
 def add_note():
     note = input(f"{BLUE}Please enter new note: {RESET}")
     if not note:
-        res = input(f"{RED}Are you sure you want to save blank note?{GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+        res = input(f"{RED}Are you sure you want to save blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if not res.lower() == "y":
             return f"{GREEN}Note was {RED}not{GREEN} saved.{RESET}"
     note_rec = NoteRecord(note)
@@ -348,13 +348,13 @@ def add_note():
 
 @input_error
 def find_note():
-    find_func = input(f"Select search by {GREEN}[t]{RESET}ags or {GREEN}[n]{RESET}otes.")
+    find_func = input(f"Select search by {GREEN}[t]{RESET}ags or {GREEN}[n]{RESET}otes: ") 
     if find_func in "tags":
         use_func = find_by_tag
     elif find_func in "notes":
         use_func = find_by_note
     else:
-        return f"{RED}You must choose: search by tags or notes!{RESET}"
+        return f"{RED}You must choose: search by tags or notes.{RESET}"
     request = input(f"{BLUE}Searching for: {RESET}")
     res = use_func(request)
     if not res:
@@ -371,7 +371,7 @@ def find_note_to_func():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input("{BLUE}Please enter the number of the note you want to edit: {RESET}")
+        indx = input(f"{BLUE}Please enter the number of the note you want to edit: {RESET}")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
@@ -384,7 +384,7 @@ def change_note():
     if not changed_note:
         request = input(f"{RED}Do you want save a blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if not request.lower() == "y":
-            return f"{GREEN}Note was {RED}not{GREEN} changed.{RESET}"
+            return f"{GREEN}Note was {RED}not{GREEN} changed. {RESET}"
     found_notes[int(indx)-1].edit_note(changed_note)
     return f"{GREEN}The note was changed.{RESET}"
 
@@ -422,6 +422,7 @@ def del_note():
     delete_note(found_notes[int(indx)-1])
     return f"{GREEN}Note was deleted.{RESET}"
 
+@input_error
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
