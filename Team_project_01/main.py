@@ -310,9 +310,17 @@ def random_search(*args) -> GeneratorType:
                 continue
             if search in name:
                 search_result.add_record(record)
-        #search on all fields
-        # if hasattr(record, "email"):
-        # if hasattr(record, "adress"):
+            #search on all fields
+            if hasattr(record, "emails"):
+                # for email in [record.emails:
+                lst = [x.value for x in record.emails]
+                # if search in [x.value for x in record.emails]:
+                if search in ''.join(lst):
+                    # if search in email.value:
+                    search_result.add_record(record)
+            # if hasattr(record, "adress"):
+            #     if search in record.adress:
+            #         search_result.add_record(record)
     if not search_result:
         raise KeyError
     return search_result.iterator(2)
