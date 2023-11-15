@@ -155,8 +155,8 @@ def delete_phone(*args):
     else:
         # no phone, remove whole record
         res = input(f"{RED}Are you sure you want to delete contact {contact_name}?{GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
-        if res != "yes" and res != "y":
-            return f"{GREEN}Contact was not deleted!{RESET}"
+        if not res.lower() == "y":
+            return f"{GREEN}Contact was {RED}not{GREEN} deleted.{RESET}"
         address_book.delete(contact_name)
     return f'{GREEN}Deleted.{RESET}'
 
@@ -236,13 +236,14 @@ def add_adress(*args):
     if args[1:]:
         adress_to_add = args[1:]
     else:
-        adress_to_add = [input(f"{BLUE}Enter adress: {RESET}")]
+        entered = input(f"{BLUE}Enter adress: {RESET}")
+        adress_to_add = entered.split(' ')
     if len(adress_to_add[0].strip()) < 1:
         raise ValueError
     if hasattr(record, 'adress'):
         ask = input(f"{BLUE}Previous adress '{record.adress}' will be deleted. OK? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: {RESET}")
-        if not ask.lower() == 'y':
-            raise ValueError
+        if not ask.lower() == "y":
+            return f"{GREEN}New address was {RED}not{GREEN} added.{RESET}"
     adress = ' '.join(str(e).capitalize() for e in adress_to_add)
     address_book.find(contact_name).add_adress(adress)
     return f"{GREEN}New adress added: {RESET}{adress}"
@@ -261,7 +262,7 @@ def change_adress(*args):
             raise IndexError
         new_adress = ' '.join(str(e).capitalize() for e in new_adress)
     record:Record = address_book.data[contact_name]
-    record.delete_adress()
+    delattr(record, "adress")
     record.add_adress(new_adress)
     return f'{GREEN}New adress:\n{RESET}{new_adress}'
 
@@ -273,7 +274,7 @@ def delete_adress(*args):
     record:Record = address_book.data[contact_name]
     if not hasattr(record, "adress"):
         return f"{BLUE}{contact_name} does not have any addresses. Skipping...{RESET}"
-    record.delete_adress()
+    delattr(record, "adress")
     return f'{GREEN}Done.{RESET}'
 
 @input_error
@@ -318,9 +319,9 @@ def random_search(*args) -> GeneratorType:
                 if search in ''.join(lst):
                     # if search in email.value:
                     search_result.add_record(record)
-            # if hasattr(record, "adress"):
-            #     if search in record.adress:
-            #         search_result.add_record(record)
+            if hasattr(record, "adress"):
+                if search in record.adress:
+                    search_result.add_record(record)
     if not search_result:
         raise KeyError
     return search_result.iterator(2)
