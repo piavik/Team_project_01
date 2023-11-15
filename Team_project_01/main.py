@@ -283,7 +283,7 @@ def random_search(*args) -> GeneratorType:
     # if first parameter too short and several parameters entered - join all parameters
     if len(search) < 3:
         if len(' '.join(args)) > 2:
-            search = ' '.join(args)
+            search = ''.join(args)
         else:
             raise IndexError
     # if search string is a name:
@@ -299,6 +299,9 @@ def random_search(*args) -> GeneratorType:
     else:
         #searching for name
         for name, record in address_book.data.items():
+            # hardcode to bypass current error with "none" record
+            if name is None:
+                continue
             if search in name:
                 search_result.add_record(record)
     if not search_result:
