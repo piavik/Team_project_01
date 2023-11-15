@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='Team_project_01',
-    version='0.4.9',
+    version='0.5.0',
     description='ClI Assistant',
     url='https://github.com/piavik/Team_project_01',
     author='project-group4',
