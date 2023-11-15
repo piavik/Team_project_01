@@ -284,6 +284,8 @@ def random_search(*args) -> GeneratorType:
     if len(search) < 3:
         if len(' '.join(args)) > 2:
             search = ''.join(args)
+        elif search.isnumeric():
+            ...
         else:
             raise IndexError
     # if search string is a name:
@@ -296,6 +298,10 @@ def random_search(*args) -> GeneratorType:
             for phone in record.phones:
                 if search in str(phone.value):
                     search_result.add_record(record)
+            if hasattr(record, "birthday"):
+                # searching by month and date, not year
+                if search in datetime.strftime(record.birthday.value, '%Y-%m-%d'):
+                    search_result.add_record(record)
     else:
         #searching for name
         for name, record in address_book.data.items():
@@ -304,6 +310,9 @@ def random_search(*args) -> GeneratorType:
                 continue
             if search in name:
                 search_result.add_record(record)
+        #search on all fields
+        # if hasattr(record, "email"):
+        # if hasattr(record, "adress"):
     if not search_result:
         raise KeyError
     return search_result.iterator(2)
