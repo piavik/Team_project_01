@@ -309,18 +309,16 @@ def random_search(*args) -> GeneratorType:
             # hardcode to bypass current error with "none" record
             if name is None:
                 continue
-            if search in name:
+            if search.lower() in name.lower():
                 search_result.add_record(record)
             #search on all fields
             if hasattr(record, "emails"):
                 # for email in [record.emails:
                 lst = [x.value for x in record.emails]
-                # if search in [x.value for x in record.emails]:
-                if search in ''.join(lst):
-                    # if search in email.value:
+                if search.lower() in ''.join(lst).lower():
                     search_result.add_record(record)
             if hasattr(record, "adress"):
-                if search in record.adress:
+                if search.lower() in record.adress.lower():
                     search_result.add_record(record)
     if not search_result:
         raise KeyError
