@@ -103,8 +103,11 @@ def change_phone(*args):
         old_phone = args[1]
         new_phone = args[2]
     else:
-        old_phone = input(f'{BLUE}Please enter old number: {RESET}')
-        if not old_phone in record.phones:
+        if args[1:]:
+            old_phone = args[1]
+        else:
+            old_phone = input(f'{BLUE}Please enter old number: {RESET}')
+        if not old_phone in ' '.join([phone.value for phone in record.phones]):
             raise KeyError
         new_phone = input(f'{BLUE}Please enter new number ({GREEN}10 digits{BLUE}): {RESET}')
     record.edit_phone(old_phone, new_phone)
