@@ -473,12 +473,12 @@ OPERATIONS = {
               }
 
 ALL_COMMANDS = OPERATIONS.keys()
-command_completer = WordCompleter(ALL_COMMANDS, sentence=True)
+command_completer = WordCompleter(ALL_COMMANDS, sentence=True, ignore_case=True)
 
 def parse(input_text: str):
     # itereate over keywords dict, not over input words !!!
     for kw, func in OPERATIONS.items():
-        if input_text.startswith(kw):
+        if input_text.lower().startswith(kw):
             params = input_text[len(kw):].strip()
             return func, params.split()
     return unknown_command, []
