@@ -1,0 +1,12 @@
+- different date formats
+- different phone formats on input - with normalize
+- save to custom file/folder
+- save to json/csv
+- use arrow keys to use commands from history
+- move setup to .whl
+- birthdays [no params] -> today
+- decompose to multiple files
+- make parser run on every word
+- DRY
+- KISS
+- SOLID
