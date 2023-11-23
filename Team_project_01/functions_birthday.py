@@ -1,6 +1,7 @@
+from datetime import datetime
 from Team_project_01.constants import RED, BLUE, GREEN, RESET
 from Team_project_01.functions_common import input_error, name_request
-
+from Team_project_01.functions_common import input_error, name_request
 
 @input_error
 def add_birthday(*args, **kwargs) -> str:

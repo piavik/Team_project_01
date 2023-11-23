@@ -5,7 +5,6 @@ from prompt_toolkit.completion import WordCompleter
 from Team_project_01.constants import *
 from Team_project_01.functions_common import input_error, name_request
 from Team_project_01.classes import *
-from Team_project_01.classes import *
 from Team_project_01.notes import *
 import Team_project_01.folder_sort
 
@@ -102,12 +101,6 @@ def sort_folder(*args):
         folder = args[0]
     return Team_project_01.folder_sort.main(folder)
 
-
-address_book = AddressBook()
-
-ALL_COMMANDS = OPERATIONS.keys()
-command_completer = WordCompleter(ALL_COMMANDS, sentence=True, ignore_case=True)
-
 def parse(input_text: str):
     # itereate over keywords dict, not over input words !!!
     for kw, func in OPERATIONS.items():
@@ -115,6 +108,51 @@ def parse(input_text: str):
             params = input_text[len(kw):].strip()
             return func, params.split()
     return unknown_command, []
+
+address_book = AddressBook()
+
+ALL_COMMANDS = OPERATIONS.keys()
+command_completer = WordCompleter(ALL_COMMANDS, sentence=True, ignore_case=True)
+
+# order MATTERS!!!! Single word command must be in the end !
+OPERATIONS = {
+                "hello": hello,
+                "help": help_,
+                "?": help_,
+                "add phone": add_phone,
+                "add birthday": add_birthday,
+                "add note": add_note,
+                "add tags": add_tags,
+                "add email": add_email,
+                "add address": add_adress,
+                "add": add_phone,
+                "change address": change_adress,
+                "change phone": change_phone,
+                "change birthday": change_birthday,
+                "change note": change_note,
+                "change email": change_email,
+                "change": change_phone, 
+                "get contact": get_phone,
+                "get": get_phone,
+                "all": all_contacts,
+                "show all": all_contacts,
+                "delete phone": delete_phone,
+                "delete birthday": delete_birthday,
+                "delete note": del_note,
+                "delete tags": delete_tags,
+                "delete address": delete_adress,
+                "delete email": delete_email,
+                "delete": delete_phone,
+                # "d": debug_,
+                "load": restore_data_from_file,
+                "save": save_data_to_file,
+                "find note": find_note,
+                "find": random_search,
+                "search": random_search,
+                "sort notes": sort_notes,
+                "birthdays": birthday_in_XX_days,
+                "sort folder": sort_folder
+              }
 
 def main():
     ''' main cycle'''
