@@ -2,8 +2,8 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='Team_project_01',
-    version='0.6.0',
-    description='ClI Assistant',
+    version='0.6.1',
+    description='Cli Assistant',
     url='https://github.com/piavik/Team_project_01',
     author='project-group4',
     license='MIT',
