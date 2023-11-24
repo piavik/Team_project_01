@@ -5,7 +5,6 @@ from prompt_toolkit.completion import WordCompleter
 from .classes import Record, AddressBook
 from .notes import *
 from .folder_sort import folder_sort
-from .readme import TEXT
 from .constants import *
 
 
@@ -120,7 +119,7 @@ def help_(*args):
     # with open('README.txt', 'r') as fh:
     #     help_bot = fh.read()
     # return help_bot
-    return TEXT
+    return README_TEXT
 
 def unknown_command(*args):
     return f"{RED}I do not understand, please use correct command.{RESET}"
