@@ -96,7 +96,7 @@ def remove_empty_dirs(directory: Path) -> None:
         # if entry.is_dir() and not entry.name in list(CATEGORIES.keys()).append('Unknown'):
             shutil.rmtree(entry)
 
-def main(folder:str) -> str:
+def folder_sort(folder:str) -> str:
     # if len(sys.argv) == 1:
     #     return 'ERROR: dir argument is needed. Terminating...'
     # else:
@@ -120,4 +120,4 @@ def main(folder:str) -> str:
 
 
 if __name__ == "__main__":
-    print(main())
+    print(folder_sort("/tmp"))

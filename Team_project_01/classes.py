@@ -3,14 +3,9 @@ from datetime import datetime
 from types import GeneratorType
 from itertools import islice
 import pickle
-from Team_project_01.fields import Field, Name, Phone, Birthday, Adress, Email
+from .fields import Name, Phone, Birthday, Adress, Email
+from .constants import *
 
-
-RED = "\033[91m"
-GREEN = "\033[92m"
-BLUE = "\033[94m"
-RESET = "\033[0m"
-FILENAME = "book.dat"
 
 class Record:
     '''
@@ -158,7 +153,6 @@ class AddressBook(UserDict):
             suit_lst.append(f"{BLUE}Noone has birthday in {days} days!{RESET}")
         for i in range(0, len(suit_lst)):
             yield islice(suit_lst, i, i+1)
-            
 
     def save(self, filename="book.dat", format='bin') -> None:
         ''' TODO: format selection and using different formats '''
