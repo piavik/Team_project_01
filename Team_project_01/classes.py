@@ -112,7 +112,7 @@ class Record:
         return difference
 
 class AddressBook(UserDict):
-    ''' Клас для зберігання та управління записами. '''
+    ''' Клас для зберігання та управління записами адресної книги. '''
 
     def add_record(self, record: Record) -> None:
         ''' Додавання запису до self.data '''
@@ -154,12 +154,12 @@ class AddressBook(UserDict):
         for i in range(0, len(suit_lst)):
             yield islice(suit_lst, i, i+1)
 
-    def save(self, filename="book.dat", format='bin') -> None:
+    def save(self, filename=FILENAME, format='bin') -> None:
         ''' TODO: format selection and using different formats '''
         with open(filename, 'wb') as fh:
             pickle.dump(self.data, fh)
 
-    def load(self, filename="book.dat", format='bin') -> None:
+    def load(self, filename=FILENAME, format='bin') -> None:
         ''' TODO: format selection and using different formats '''
         # check if filename provided as non-default argument, else -> request, if empty -> set default
         try:
@@ -167,3 +167,9 @@ class AddressBook(UserDict):
                 self.data = pickle.load(fh)
         except FileNotFoundError:
             print(f'{BLUE}File not found, using new book.{RESET}')
+
+class Bot():
+    '''
+    Клас для інтерактивного спілкування з користувачем.
+    '''
+    ...

@@ -11,6 +11,14 @@ class Field:
     def __str__(self) -> str:
         return str(self.__value)
 
+    @property
+    def value(self) -> str:
+        return self.__value
+    
+    @value.setter
+    def value(self, value) -> None:
+        self.__value = value
+
 class Name(Field):
     ''' Клас для зберігання імені контакту. '''
     @property
@@ -56,7 +64,7 @@ class Birthday(Field):
 
     def __str__(self):
         return datetime.strftime(self.__value, '%d %B')
-    
+
 class Adress(Field):
     ''' Клас для зберігання адреси контакту. '''
     @property

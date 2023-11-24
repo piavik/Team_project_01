@@ -5,7 +5,6 @@ from prompt_toolkit.completion import WordCompleter
 from .classes import Record, AddressBook
 from .notes import *
 from .folder_sort import folder_sort
-from .readme import TEXT
 from .constants import *
 
 
@@ -37,7 +36,7 @@ def _name_request(*args) -> str:
     return args[0].strip() if args else input(f"{BLUE}Please enter the contact name: {RESET}").strip()
 
 @input_error
-def add_phone(address_book, *args, **kwargs) -> str:
+def add_phone(address_book, notes,  *args) -> str:
     contact_name = _name_request(*args)
     if args[1:]:
         new_phone = args[1]
@@ -59,7 +58,7 @@ def add_phone(address_book, *args, **kwargs) -> str:
     return message
 
 @input_error
-def add_birthday(address_book, *args, **kwargs) -> str:
+def add_birthday(address_book, notes,  *args) -> str:
     contact_name = _name_request(*args)
     if args[1:]:
         birthday = args[1]
@@ -75,11 +74,10 @@ def add_birthday(address_book, *args, **kwargs) -> str:
         record = Record(contact_name)
         record.add_birthday(birthday)
         address_book.add_record(record)
-    message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{record.name.value}\n  {BLUE}Birthday: {RESET}{birthday}"
-    return message
+    return f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{record.name.value}\n  {BLUE}Birthday: {RESET}{birthday}"
 
 @input_error
-def change_phone(address_book, *args):
+def change_phone(address_book, notes,  *args):
     contact_name = _name_request(*args)
     record = address_book.data[contact_name]
     if args[2:]:
@@ -97,7 +95,7 @@ def change_phone(address_book, *args):
     return f"\n{GREEN}Changed:\n  {BLUE}Phone: {RESET}{old_phone} --> {new_phone}"
 
 @input_error
-def change_birthday(address_book, *args):
+def change_birthday(address_book, notes,  *args):
     contact_name = _name_request(*args)
     record = address_book.data[contact_name]
     if args[1:]:
@@ -108,25 +106,25 @@ def change_birthday(address_book, *args):
     return f"\n{GREEN}Changed to:{RESET} {new_birthday}"
 
 @input_error
-def get_phone(address_book, *args):
+def get_phone(address_book, notes,  *args):
     contact_name = _name_request(*args)
     return address_book.find(contact_name)
 
-def all_contacts(address_book, N=3, *args):
-    return address_book.iterator(N)
+def all_contacts(address_book, notes, n=3, *args):
+    return address_book.iterator(n)
 
 @input_error
 def help_(*args):
     # with open('README.txt', 'r') as fh:
     #     help_bot = fh.read()
     # return help_bot
-    return TEXT
+    return README_TEXT
 
 def unknown_command(*args):
     return f"{RED}I do not understand, please use correct command.{RESET}"
 
 @input_error
-def delete_phone(address_book, *args):
+def delete_phone(address_book, notes, *args):
     contact_name = _name_request(*args)
     # name not in book
     if contact_name not in list(address_book.data.keys()):
@@ -140,14 +138,14 @@ def delete_phone(address_book, *args):
             record.remove_phone(phone)
     else:
         # no phone, remove whole record
-        res = input(f"{RED}Are you sure you want to delete contact {contact_name}? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
+        res = input(f"{RED}Are you sure you want to delete contact {BLUE}{contact_name}{RED}? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if not res.lower() == "y":
             return f"{GREEN}Contact was {RED}not{GREEN} deleted.{RESET}"
         address_book.delete(contact_name)
     return f'{GREEN}Deleted.{RESET}'
 
 @input_error
-def delete_birthday(address_book, *args):
+def delete_birthday(address_book, notes, *args):
     contact_name = _name_request(*args)
     # name not in book
     if contact_name not in list(address_book.data.keys()):
@@ -156,17 +154,18 @@ def delete_birthday(address_book, *args):
     delattr(record, "birthday")
     return f'{GREEN}Deleted.{RESET}'
 
-def restore_data_from_file(address_book, file_name=FILENAME, *args) -> str:
+def restore_data_from_file(address_book, notes, file_name=FILENAME, *args) -> str:
     ''' restore AddressBook object from the file '''
     address_book.load(file_name)
     return file_name
 
-def save_data_to_file(address_book, file_name=FILENAME, *args):
+def save_data_to_file(address_book, notes, file_name=FILENAME, *args):
     address_book.save(file_name)
+    notes.save()
     return f"{GREEN}Saved to {file_name}{RESET}"
 
 @input_error
-def add_email(address_book, *args):
+def add_email(address_book, notes, *args):
     contact_name = _name_request(*args)
     record = Record(contact_name)
     if contact_name not in list(address_book.data.keys()):
@@ -182,7 +181,7 @@ def add_email(address_book, *args):
     return f"{GREEN}Added: {RESET}{email_to_add}"
 
 @input_error
-def change_email(address_book, *args):
+def change_email(address_book, notes, *args):
     contact_name = _name_request(*args)
     record:Record = address_book.data[contact_name]
     if args[2:]:
@@ -197,7 +196,7 @@ def change_email(address_book, *args):
     return f"\n{GREEN}Email changed:\n  {RESET}{old_email} --> {new_email}"
 
 @input_error
-def delete_email(address_book, *args):
+def delete_email(address_book, notes, *args):
     contact_name = _name_request(*args)
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
@@ -214,7 +213,7 @@ def delete_email(address_book, *args):
     return f'{GREEN}Done.{RESET}'
 
 @input_error
-def add_adress(address_book, *args):
+def add_adress(address_book, notes, *args):
     contact_name = _name_request(*args)
     record:Record = address_book.data[contact_name]
     if contact_name not in list(address_book.data.keys()):
@@ -235,7 +234,7 @@ def add_adress(address_book, *args):
     return f"{GREEN}New adress added: {RESET}{adress}"
 
 @input_error
-def change_adress(address_book, *args):
+def change_adress(address_book, notes, *args):
     contact_name = _name_request(*args)
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
@@ -253,7 +252,7 @@ def change_adress(address_book, *args):
     return f'{GREEN}New adress:\n{RESET}{new_adress}'
 
 @input_error
-def delete_adress(address_book, *args):
+def delete_adress(address_book, notes, *args):
     contact_name = _name_request(*args)
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
@@ -264,7 +263,7 @@ def delete_adress(address_book, *args):
     return f'{GREEN}Done.{RESET}'
 
 @input_error
-def random_search(address_book, *args) -> GeneratorType:
+def random_search(address_book, notes, *args) -> GeneratorType:
     search = args[0]
     # do not search if less than 3 symbols entered
     # if first parameter too short and several parameters entered - join all parameters
@@ -311,31 +310,33 @@ def random_search(address_book, *args) -> GeneratorType:
     return search_result.iterator(2)
 
 @input_error
-def birthday_in_XX_days(address_book, *args):
+def birthday_in_XX_days(address_book, notes, *args):
     ''' знайти всі контакти, у яких день народження за XX днів'''
     return address_book.bd_in_xx_days(int(args[0]))
 
+
 @input_error
-def add_note(*args):
+def add_note(address_book, notes, *arg):
     note = input(f"{BLUE}Please enter new note: {RESET}")
     if not note:
         res = input(f"{RED}Are you sure you want to save blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if not res.lower() == "y":
-            return f"{GREEN}Note was {RED}not{GREEN} saved.{RESET}"
-    note_rec = NoteRecord(note)
+            return f"{GREEN}Note was {RED}not{GREEN} sasved.{RESET}"
+    new_note = NoteRecord(note)
     tags = input(f"{BLUE}Please enter note tags: {RESET}")
-    note_rec.add_tags(tags.split(", ") if "," in tags else tags.split(" "))
-    add_record(note_rec)
-    save_notes()
+    new_note.add_tags(tags.split(", ") if "," in tags else tags.split(" "))
+    notes.add(new_note)
+    notes.save()
     return f"{GREEN}The note was saved.{RESET}"
 
 @input_error
-def find_note(*args):
-    find_func = input(f"Select search by {GREEN}[t]{RESET}ags or {GREEN}[n]{RESET}otes: ") 
+def find_note(address_book, notes, *arg):
+    find_func = input(f"Select search by {GREEN}[t]{RESET}ags or {GREEN}[n]{RESET}otes: ")
+    # тут брєд якийсь, повна надія на ввод тільки t/n
     if find_func in "tags":
-        use_func = find_by_tag
+        use_func = notes.find_by_tag
     elif find_func in "notes":
-        use_func = find_by_note
+        use_func = notes.find_by_note
     else:
         return f"{RED}You must choose: search by tags or notes.{RESET}"
     request = input(f"{BLUE}Searching for: {RESET}")
@@ -345,9 +346,9 @@ def find_note(*args):
     return res
 
 @input_error
-def find_note_to_func(*args):
+def _find_note_to_func(address_book, notes, *arg):
     num = 1
-    found_notes = find_note()
+    found_notes = find_note(address_book, notes, *arg)
     if isinstance(found_notes, str):
         return found_notes
     elif len(found_notes) > 1:
@@ -358,52 +359,61 @@ def find_note_to_func(*args):
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
-    return found_notes, indx
+    return found_notes, int(indx)
 
 @input_error
-def change_note(*args):
-    found_notes, indx = find_note_to_func()
+def change_note(address_book, notes, *arg):
+    found_notes, indx = _find_note_to_func(address_book, notes, *arg)
     changed_note = input(f"{BLUE}Please enter the note to change: {RESET}")
     if not changed_note:
         request = input(f"{RED}Do you want save a blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if not request.lower() == "y":
             return f"{GREEN}Note was {RED}not{GREEN} changed. {RESET}"
-    found_notes[int(indx)-1].edit_note(changed_note)
+    found_notes[indx-1].edit_note(changed_note)
     return f"{GREEN}The note was changed.{RESET}"
 
 @input_error
-def add_tags(*args):
-    found_notes, indx = find_note_to_func()
+def add_tags(address_book, notes, *arg):
+    found_notes, indx = _find_note_to_func(address_book, notes, *arg)
     new_tags = input(f"{BLUE}Please enter the tags you want to add: {RESET}")
-    found_notes[int(indx)-1].add_tags(new_tags.split(", ") if "," in new_tags else new_tags.split(" "))
+    found_notes[indx-1].add_tags(new_tags.split(", ") if "," in new_tags else new_tags.split(" "))
     return f"{GREEN}Tags were added.{RESET}"
 
 @input_error
-def delete_tags(*args):
-    found_notes, indx = find_note_to_func()
+def delete_tags(address_book, notes, *arg):
+    found_notes, indx = _find_note_to_func(address_book, notes, *arg)
     tags_to_del = input(f"{BLUE}Please enter the tags you want to delete: {RESET}")
-    found_notes[int(indx)-1].del_tags(tags_to_del.split(", ") if "," in tags_to_del else tags_to_del.split(" "))
+    found_notes[indx-1].del_tags(tags_to_del.split(", ") if "," in tags_to_del else tags_to_del.split(" "))
     return f"{GREEN}Done.{RESET}"
 
 @input_error
-def del_note(*args):
-    num = 1
-    found_notes = find_note()
+def del_note(address_book, notes, *arg):
+    found_notes = find_note(address_book, notes, *arg)
     if isinstance(found_notes, str):
+        # does int ever happen ?
         return found_notes
-    elif len(found_notes) > 1:
+    elif len(found_notes) >= 1:
+        num = 1
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input(f"{BLUE}Please enter the number of the note you want to delete: {RESET}")
-    elif len(found_notes) == 1:
-        indx = 1
-    print(found_notes[int(indx)-1])
+        indx = int(input(f"{BLUE}Please enter the number of the note you want to delete: {RESET}")) - 1
+    print(found_notes[indx])
     check = input(f"{RED}Are you sure you want to delete this entry? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
     if not check.lower() == "y":
         return f"{GREEN}Note was {RED}not{GREEN} deleted.{RESET}"
-    delete_note(found_notes[int(indx)-1])
+    notes.delete(found_notes[indx])
     return f"{GREEN}Note was deleted.{RESET}"
+
+
+def sort_notes(address_book, notes, *arg) -> list:
+    lst = []
+    notes.sort(key = lambda x: len(x.tags), reverse=True)
+    for i in notes:
+        lst.append(i)
+    return lst
+
+
 
 @input_error
 def sort_folder(*args):
@@ -427,15 +437,18 @@ def parse(commands: dict, input_text: str):
 def main() -> None:
     ''' main cycle'''
     # file_name = restore_data_from_file()
-    # entered_file_name = input(f"From what file info should be fetched (default is '{FILENAME}')? ").lower()
+    # entered_file_name = input(f"From what file info should be fetched 
+    # (default is '{FILENAME}')? ").lower()
     #file_name = FILENAME if entered_file_name == '' else entered_file_name
     file_name = FILENAME
     address_book = AddressBook()
     address_book.load(file_name)
-    load_notes()
+    notes = Notes()
+    notes.load()
     # order MATTERS!!!! Single word command must be in the end !
     commands = {
         "hello": hello,
+        "hi": hello,
         "help": help_,
         "?": help_,
         "add phone": add_phone,
@@ -481,7 +494,7 @@ def main() -> None:
         if input_.lower() in STOP_WORDS:
             # TODO: format dependent
             save_data_to_file(address_book, file_name)
-            save_notes()
+            notes.save()
             print(f"{GREEN}See you, bye!{RESET}")
             break
         # check for empty input, do nothing
@@ -491,7 +504,7 @@ def main() -> None:
         command, parameters = parse(commands, input_)
         # all -> generator
         # other commands -> str
-        result = command(address_book, *parameters)
+        result = command(address_book, notes, *parameters)
         if isinstance(result, GeneratorType):
             for _selection in result:
                 for _entry in _selection:
