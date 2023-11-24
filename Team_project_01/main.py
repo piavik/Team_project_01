@@ -120,7 +120,7 @@ def help_(*args):
     # with open('README.txt', 'r') as fh:
     #     help_bot = fh.read()
     # return help_bot
-    return README
+    return TEXT
 
 def unknown_command(*args):
     return f"{RED}I do not understand, please use correct command.{RESET}"

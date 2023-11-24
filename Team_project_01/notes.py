@@ -1,8 +1,6 @@
 from datetime import datetime
 import pickle
-
-BLUE = "\033[94m"
-RESET = "\033[0m"
+from .constants import *
 
 class NoteRecord():
     def __init__(self, note: str) -> None:
@@ -33,28 +31,28 @@ except NameError:
 def add_record(record: NoteRecord) -> None:
     notes_lst.append(record)
     
-def find_by_tag(key: str) -> list:
+def find_by_tag(key: str, *args) -> list:
     notes = []
     for i in notes_lst:
         if key.lower() in i.tags:
             notes.append(i)
     return notes
     
-def find_by_note(key: str) -> list:
+def find_by_note(key: str, *args) -> list:
     notes = []
     for i in notes_lst:
         if key in i.note:
             notes.append(i)
     return notes
 
-def sort_notes() -> list:
+def sort_notes(*args) -> list:
     lst = []
     notes_lst.sort(key = lambda x: len(x.tags), reverse=True)
     for i in notes_lst:
         lst.append(i)
     return lst
 
-def delete_note(key) -> None:
+def delete_note(key, *args) -> None:
     notes_lst.remove(key)
 
 def save_notes(filename="notes_book.bin") -> None:
