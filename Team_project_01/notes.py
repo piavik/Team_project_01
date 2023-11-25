@@ -4,7 +4,9 @@ import pickle
 from Team_project_01.constants import *
 # from .fields import Field
 
-
+# 
+# breaks notes_book.bin saved file - due to different format
+#
 # class Note(Field):
 #     ''' Клас для зберігання нотатка. '''
 #     @property
@@ -73,7 +75,7 @@ class Notes(UserList):
             with open(filename, 'rb') as fh:
                 self.data = pickle.load(fh)
         except FileNotFoundError:
-            print(f'{BLUE}File not found, using new book.{RESET}')
+            print(f'{BLUE}File notK) found, using new file for notes.{RESET}')
 
     def save(self, filename=NOTES_NILENAME) -> None:
         ''' save data to bin file with pickle '''
