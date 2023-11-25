@@ -1,7 +1,7 @@
 from collections import UserList
 from datetime import datetime
 import pickle
-from .constants import *
+from Team_project_01.constants import *
 # from .fields import Field
 
 
