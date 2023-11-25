@@ -10,3 +10,5 @@
 - DRY
 - KISS
 - SOLID
+
+branch "functional" - attempt to make HW with functions, without moving everything to classes
