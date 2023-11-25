@@ -1,4 +1,4 @@
-from abc import ABC, 
+from abc import ABC, abstractmethod
 
 
 class AbstractOutput(ABC):
@@ -25,7 +25,7 @@ class EmailOutput(AbstractOutput):
 
 
 class TelegramOutput(AbstractOutput):
-    ''' Output to email '''
+    ''' Output to Telegram '''
     def __init_(self):
         ...
 
