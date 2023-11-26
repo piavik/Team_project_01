@@ -36,12 +36,12 @@ class Message:
 
 class NewContactMessage(Message):
     #виводить повідмлення про створення нового контакту
-    def __init__(self, name, param1=""):
+    def __init__(self, name, param=""):
         self.name = name
-        self.param1 = param1
+        self.param = param
 
     def message(self):
-        message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{self.name}\n  {BLUE}Phone: {RESET}{self.param1}"
+        message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{self.name}\n  {BLUE}Phone: {RESET}{self.param}"
         return message
 
 
@@ -81,11 +81,10 @@ class NotDoneMessage(Message):
 
 class ChangedMessage(Message):
     # виводить повідомлення про успішну зміну параметра
-    def __init__(self, changed_param_name, old_param, new_param, add_text = ""):
+    def __init__(self, changed_param_name, old_param, new_param):
         self.changed_param_name = changed_param_name
         self.old_param = old_param
         self.new_param = new_param
-        self.add_text = add_text
     
     def message(self):
         message = f"\n{GREEN}Changed:\n  {BLUE}{self.changed_param_name}: {RESET}{self.old_param} --> {self.new_param}"
