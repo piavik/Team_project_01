@@ -1,9 +1,10 @@
 from types import GeneratorType
 from datetime import datetime
+from functools import wraps
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
 from Team_project_01.classes import Record, AddressBook
-from Team_project_01.notes import *
+from Team_project_01.notes import Notes, NoteRecord
 from Team_project_01.folder_sort import folder_sort
 from Team_project_01.constants import *
 
@@ -13,7 +14,8 @@ def input_error(func):
     ''' 
     returns FUNCTION, not string !!!
     '''
-    def inner(*args):
+    @wraps(func)
+    def wrapper(*args):
         try:
             result = func(*args)
         except KeyError:
@@ -24,12 +26,14 @@ def input_error(func):
             result = "Not enough parameters."
         except TypeError:
             result = "Sorry, I do not understand."
+        except FileNotFoundError:
+            result = "File not found, using new book."
         else:
             return result
         return f'{RED}{result}{RESET}'
-    return inner
+    return wrapper
 
-def hello(*args):
+def hello(*args) -> str:
     return f'{BLUE}How can I help you?{RESET}'
 
 def _name_request(*args) -> str:
@@ -154,6 +158,7 @@ def delete_birthday(address_book, notes, *args) -> str:
     delattr(record, "birthday")
     return f'{GREEN}Deleted.{RESET}'
 
+@input_error
 def restore_data_from_file(address_book, notes, file_name=FILENAME, *args) -> str:
     ''' restore AddressBook object from the file '''
     address_book.load(file_name)
@@ -162,7 +167,7 @@ def restore_data_from_file(address_book, notes, file_name=FILENAME, *args) -> st
 
 def save_data_to_file(address_book, notes, file_name=FILENAME, *args) -> str:
     address_book.save(file_name)
-    notes.save()
+    notes.save(file_name)
     return f"{GREEN}Saved to {file_name}{RESET}"
 
 @input_error

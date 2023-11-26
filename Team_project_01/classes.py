@@ -166,10 +166,11 @@ class AddressBook(UserDict):
             with open(filename, 'rb') as fh:
                 self.data = pickle.load(fh)
         except FileNotFoundError:
-            print(f'{BLUE}File not found, using new book.{RESET}')
+            #self.save(filename)
+            ...
 
-class Bot():
-    '''
-    Клас для інтерактивного спілкування з користувачем.
-    '''
-    ...
+# class Bot():
+#     '''
+#     Клас для інтерактивного спілкування з користувачем.
+#     '''
+#     ...

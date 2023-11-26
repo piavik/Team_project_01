@@ -4,7 +4,6 @@ BLUE = "\033[94m"
 RESET = "\033[0m"
 
 FILENAME = "book.bin"
-NOTES_NILENAME = "notes_book.bin"
 
 STOP_WORDS = [
                 'good bye', 

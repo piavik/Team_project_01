@@ -69,17 +69,20 @@ class Notes(UserList):
         ''' Видалення записів за ключем'''
         self.data.remove(key)
 
-    def load(self, filename=NOTES_NILENAME) -> None:
+    def load(self, file_name=NILENAME) -> None:
         ''' load saved data from bin file with pickle '''
+        file_name = "notes_"+file_name
         try:
-            with open(filename, 'rb') as fh:
+            with open(file_name, 'rb') as fh:
                 self.data = pickle.load(fh)
         except FileNotFoundError:
-            print(f'{BLUE}File notK) found, using new file for notes.{RESET}')
+            #self.save(file_name)
+            ...
 
-    def save(self, filename=NOTES_NILENAME) -> None:
+    def save(self, file_name=NILENAME) -> None:
         ''' save data to bin file with pickle '''
-        with open(filename, 'wb') as fh:
+        file_name = "notes_"+file_name
+        with open(file_name, 'wb') as fh:
             pickle.dump(self.data, fh)
 
 
