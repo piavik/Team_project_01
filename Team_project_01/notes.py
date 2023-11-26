@@ -69,7 +69,7 @@ class Notes(UserList):
         ''' Видалення записів за ключем'''
         self.data.remove(key)
 
-    def load(self, file_name=NILENAME) -> None:
+    def load(self, file_name=FILENAME) -> None:
         ''' load saved data from bin file with pickle '''
         file_name = "notes_"+file_name
         try:
@@ -79,7 +79,7 @@ class Notes(UserList):
             #self.save(file_name)
             ...
 
-    def save(self, file_name=NILENAME) -> None:
+    def save(self, file_name=FILENAME) -> None:
         ''' save data to bin file with pickle '''
         file_name = "notes_"+file_name
         with open(file_name, 'wb') as fh:
