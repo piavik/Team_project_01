@@ -27,6 +27,68 @@ STOP_WORDS = [
                 'q'
             ]
 
+
+class Message:
+    def message(self):
+        raise NotImplementedError()
+    
+
+class NewContactMessage(Message):
+    def __init__(self, name, param1=None, param2=None, param3=None):
+        self.name = name
+        self.param1 = param1
+        self.param2 = param2
+        self.param3 = param3
+
+    def message(self):
+        message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{self.name}\n  {BLUE}Phone: {RESET}{self.param1}"
+        return message
+
+
+class PleaseEnterInput(Message):
+    def __init__(self, param_to_enter, add_text = ""):
+        self.param_to_enter = param_to_enter
+        self.add_text = add_text
+
+    def message(self):
+        message = input(f'{BLUE}Please enter {self.param_to_enter} {self.add_text}- PleaseEnterInput: {RESET}')
+        return message
+
+
+class DoneMessage(Message):
+    # виводить повідомлення про успішне виконання (видалення, зміну, додавання, тощо)
+    def __init__(self, done_param_name, activity, done_param=""):
+        self.done_param_name = done_param_name
+        self.activity = activity
+        self.done_param = done_param
+
+    def message(self):
+        message = f"{GREEN}{self.done_param_name} was {self.activity}: {RESET}{self.done_param} - DoneMessage"
+        return message
+
+
+class NotDoneMessage(Message):
+    def __init__(self, not_done_param_name, activity):
+        self.not_done_param_name = not_done_param_name
+        self.activity = activity
+
+    def message(self):
+        message = f"{GREEN}{self.not_done_param_name} was {RED}not{GREEN} {self.activity}.{RESET}"
+        return message
+
+
+class ChangedMessage(Message):
+    def __init__(self, changed_param_name, old_param, new_param, add_text = ""):
+        self.changed_param_name = changed_param_name
+        self.old_param = old_param
+        self.new_param = new_param
+        self.add_text = add_text
+    
+    def message(self):
+        message = f"\n{GREEN}Changed:\n  {BLUE}{self.changed_param_name}: {RESET}{self.old_param} --> {self.new_param} - ChangedMessage"
+        return message
+
+
 def input_error(func):
     ''' 
     returns FUNCTION, not string !!!
@@ -47,19 +109,24 @@ def input_error(func):
         return f'{RED}{result}{RESET}'
     return inner
 
+
 def hello(*args):
     return f'{BLUE}How can I help you?{RESET}'
 
-def _name_request(*args) -> str:
-    return args[0].strip() if args else input(f"{BLUE}Please enter the contact name: {RESET}").strip()
 
-@input_error
+def _name_request(*args) -> str:
+    return args[0].strip() if args else PleaseEnterInput("the contact name").message().strip()
+    #input(f"{BLUE}Please enter the contact name: {RESET}").strip()
+
+
+#@input_error
 def add_phone(*args, **kwargs) -> str:
     contact_name = _name_request(*args)
     if args[1:]:
         new_phone = args[1]
     else:
-        new_phone = input(f'{BLUE}Please enter the phone number ({GREEN}10 digits{BLUE}): {RESET}')
+        new_phone = PleaseEnterInput("the phone number", f"({GREEN}10 digits{BLUE})").message()
+        #new_phone = input(f'{BLUE}Please enter the phone number ({GREEN}10 digits{BLUE}): {RESET}')
     # if contact exist - we add phone to the list, not replace
     if contact_name in address_book.data.keys():
         record = address_book.data[contact_name]
@@ -72,8 +139,10 @@ def add_phone(*args, **kwargs) -> str:
     if args[2:]:
         birthday = args[2]
         record.add_birthday(birthday)
-    message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{record.name.value}\n  {BLUE}Phone: {RESET}{new_phone}"
+    message = NewContactMessage(record.name.value, new_phone).message()
+    #message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{record.name.value}\n  {BLUE}Phone: {RESET}{new_phone}"
     return message
+
 
 @input_error
 def add_birthday(*args, **kwargs) -> str:
@@ -81,7 +150,8 @@ def add_birthday(*args, **kwargs) -> str:
     if args[1:]:
         birthday = args[1]
     else:
-        birthday = input(f'{BLUE}Please enter birthday ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
+        birthday = PleaseEnterInput("birthday", f"({GREEN}YYYY-MM-DD{BLUE})").message()
+        #input(f'{BLUE}Please enter birthday ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
     if contact_name in address_book.data.keys():
         record = address_book.data[contact_name]
         record.add_birthday(birthday)
@@ -92,8 +162,10 @@ def add_birthday(*args, **kwargs) -> str:
         record = Record(contact_name)
         record.add_birthday(birthday)
         address_book.add_record(record)
-    message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{record.name.value}\n  {BLUE}Birthday: {RESET}{birthday}"
+    message = NewContactMessage(record.name.value, birthday).message()
+    #message = f"\n{GREEN}Record added:\n  {BLUE}Name: {RESET}{record.name.value}\n  {BLUE}Birthday: {RESET}{birthday}"
     return message
+
 
 @input_error
 def change_phone(*args):
@@ -106,12 +178,15 @@ def change_phone(*args):
         if args[1:]:
             old_phone = args[1]
         else:
-            old_phone = input(f'{BLUE}Please enter old number: {RESET}')
+            old_phone = PleaseEnterInput("old number").message()
+            #input(f'{BLUE}Please enter old number: {RESET}')
         if not old_phone in ' '.join([phone.value for phone in record.phones]):
             raise KeyError
-        new_phone = input(f'{BLUE}Please enter new number ({GREEN}10 digits{BLUE}): {RESET}')
+        new_phone = PleaseEnterInput("new phone number", f"({GREEN}10 digits{BLUE})").message()
     record.edit_phone(old_phone, new_phone)
-    return f"\n{GREEN}Changed:\n  {BLUE}Phone: {RESET}{old_phone} --> {new_phone}"
+    return ChangedMessage("Phone", old_phone, new_phone).message()
+#f"\n{GREEN}Changed:\n  {BLUE}Phone: {RESET}{old_phone} --> {new_phone}"
+
 
 @input_error
 def change_birthday(*args):
@@ -120,17 +195,22 @@ def change_birthday(*args):
     if args[1:]:
         new_birthday = args[1]
     else:
-        new_birthday = input(f'{BLUE}Please enter new birthday date ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
+        new_birthday = PleaseEnterInput("new birthday date", f"({GREEN}YYYY-MM-DD{BLUE})").message()
+        #input(f'{BLUE}Please enter new birthday date ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
     record.add_birthday(new_birthday)
-    return f"\n{GREEN}Changed to:{RESET} {new_birthday}"
+    return ChangedMessage("Birthday", "", new_birthday).message()
+#           f"\n{GREEN}Changed:\n {BLUE}Birthday: {RESET} -->{new_birthday}"
+
 
 @input_error
 def get_phone(*args):
     contact_name = _name_request(*args)
     return address_book.find(contact_name)
 
+
 def all_contacts(N=3, *args):
     return address_book.iterator(N)
+
 
 @input_error
 def help_(*args):
@@ -139,8 +219,10 @@ def help_(*args):
     # return help_bot
     return TEXT
 
+
 def unknown_command(*args):
     return f"{RED}I do not understand, please use correct command.{RESET}"
+
 
 @input_error
 def delete_phone(*args):
@@ -159,9 +241,12 @@ def delete_phone(*args):
         # no phone, remove whole record
         res = input(f"{RED}Are you sure you want to delete contact {contact_name}? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if not res.lower() == "y":
-            return f"{GREEN}Contact was {RED}not{GREEN} deleted.{RESET}"
+            return NotDoneMessage("Contact", "deleted").message()
+        #           f"{GREEN}Contact was {RED}not{GREEN} deleted.{RESET}"
         address_book.delete(contact_name)
-    return f'{GREEN}Deleted.{RESET}'
+    return DoneMessage("Phone", "deleted", phone).message()
+            #f'{GREEN}Deleted.{RESET}'
+
 
 @input_error
 def delete_birthday(*args):
@@ -171,7 +256,8 @@ def delete_birthday(*args):
         raise KeyError
     record = address_book.data[contact_name]
     delattr(record, "birthday")
-    return f'{GREEN}Deleted.{RESET}'
+    return DoneMessage("Birthday", "deleted").message().replace(":","")
+        #   f'{GREEN}Deleted.{RESET}'
 
 def restore_data_from_file(*args, file_name=FILENAME) -> str:
     ''' restore AddressBook object from the file '''
@@ -180,7 +266,9 @@ def restore_data_from_file(*args, file_name=FILENAME) -> str:
 
 def save_data_to_file(file_name=FILENAME, *args):
     address_book.save(file_name)
-    return f"{GREEN}Saved to {file_name}{RESET}"
+    return DoneMessage("Data", "saved to", file_name).message()
+#           f"{GREEN}Saved to {file_name}{RESET}"
+
 
 @input_error
 def add_email(*args):
@@ -191,12 +279,15 @@ def add_email(*args):
     if args[1:]:
         email_to_add = args[1]
     else:
-        email = input(f"{BLUE}Please enter the email: {RESET}")
+        email = PleaseEnterInput("the email").message()
+        #input(f"{BLUE}Please enter the email: {RESET}")
         if email in [e.value for e in record.emails]:
             return f"{BLUE}{contact_name} already has this email: {RESET}{email} {BLUE}Skipping...{RESET}"
         email_to_add = email
     address_book.find(contact_name).add_email(email_to_add)
-    return f"{GREEN}Added: {RESET}{email_to_add}"
+    return DoneMessage("Email", "added", email_to_add).message()
+#           f"{GREEN}Added: {RESET}{email_to_add}"
+
 
 @input_error
 def change_email(*args):
@@ -206,12 +297,15 @@ def change_email(*args):
         old_email = args[1]
         new_email = args[2]
     else:
-        old_email = input(f"{BLUE}Please enter email you want to change: {RESET}")
+        old_email = PleaseEnterInput("email you want to change").message()
+        #input(f"{BLUE}Please enter email you want to change: {RESET}")
         if old_email not in [e.value for e in record.emails]:
             return f"{BLUE}{contact_name} does not have {RESET}{old_email} {BLUE}Skipping...{RESET}"
-        new_email = input(f"{BLUE}Please enter new email: {RESET}")
+        new_email = PleaseEnterInput("new email").message()
+        #input(f"{BLUE}Please enter new email: {RESET}")
     record.change_email(old_email, new_email)
-    return f"\n{GREEN}Email changed:\n  {RESET}{old_email} --> {new_email}"
+    return ChangedMessage("Email", old_email, new_email).message()
+            #f"\n{GREEN}Changed:\n  {BLUE}Email: {RESET}{old_email} --> {new_email}"
 
 @input_error
 def delete_email(*args):
@@ -222,13 +316,16 @@ def delete_email(*args):
     if args[1:]:
         emails_to_delete = args[1:]
     else:
-        emails_to_delete = [input(f"{BLUE}Please enter email: {RESET}")]
+        emails_to_delete = [PleaseEnterInput("email").message()]
+        #[input(f"{BLUE}Please enter email: {RESET}")]
     for email in emails_to_delete:
         if email not in [e.value for e in record.emails]:
-            return f"{BLUE}{contact_name} does not have such email. Skipping...{RESET}"
+            return f"{BLUE}{contact_name} does not have {RESET}{email} Skipping...{RESET}"
         else:
             record.delete_email(email)
-    return f'{GREEN}Done.{RESET}'
+    return DoneMessage("Email", "deleted", email)
+#           f'{GREEN}Done.{RESET}'
+
 
 @input_error
 def add_adress(*args):
@@ -239,17 +336,21 @@ def add_adress(*args):
     if args[1:]:
         adress_to_add = args[1:]
     else:
-        entered = input(f"{BLUE}Enter adress: {RESET}")
+        entered = PleaseEnterInput("adress").message()
+        #input(f"{BLUE}Enter adress: {RESET}")
         adress_to_add = entered.split(' ')
     if len(adress_to_add[0].strip()) < 1:
         raise ValueError
     if hasattr(record, 'adress'):
         ask = input(f"{BLUE}Previous adress '{record.adress}' will be deleted. OK? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: {RESET}")
         if not ask.lower() == "y":
-            return f"{GREEN}New address was {RED}not{GREEN} added.{RESET}"
+            return NotDoneMessage("New address", "added").message()
+        #           f"{GREEN}New address was {RED}not{GREEN} added.{RESET}"
     adress = ' '.join(str(e).capitalize() for e in adress_to_add)
     address_book.find(contact_name).add_adress(adress)
-    return f"{GREEN}New adress added: {RESET}{adress}"
+    return DoneMessage("Adress", "added", adress).message()
+#           f"{GREEN}New adress added: {RESET}{adress}"
+
 
 @input_error
 def change_adress(*args):
@@ -259,7 +360,8 @@ def change_adress(*args):
     if args[1:]:
         new_adress = ' '.join(str(e).capitalize() for e in args[1:])
     else:
-        new_adress = [input(f"{BLUE}Please enter new adress: {RESET}")]
+        new_adress = [PleaseEnterInput("new adress").message()]
+        #[input(f"{BLUE}Please enter new adress: {RESET}")]
         new_adress = new_adress[0].split(" ")
         if not new_adress:
             raise IndexError
@@ -267,7 +369,9 @@ def change_adress(*args):
     record:Record = address_book.data[contact_name]
     delattr(record, "adress")
     record.add_adress(new_adress)
-    return f'{GREEN}New adress:\n{RESET}{new_adress}'
+    return ChangedMessage("Adress", "", new_adress).message()
+            #f'\n{GREEN}Changed:\n {BLUE}Adress: {RESET} -->{new_adress}'
+
 
 @input_error
 def delete_adress(*args):
@@ -278,7 +382,9 @@ def delete_adress(*args):
     if not hasattr(record, "adress"):
         return f"{BLUE}{contact_name} does not have any addresses. Skipping...{RESET}"
     delattr(record, "adress")
-    return f'{GREEN}Done.{RESET}'
+    return DoneMessage("Adress", "deleted").message().replace(":","")
+#           f'{GREEN}Done.{RESET}'
+
 
 @input_error
 def random_search(*args) -> GeneratorType:
@@ -327,24 +433,31 @@ def random_search(*args) -> GeneratorType:
         raise KeyError
     return search_result.iterator(2)
 
+
 @input_error
 def birthday_in_XX_days(*args):
     ''' знайти всі контакти, у яких день народження за XX днів'''
     return address_book.bd_in_xx_days(int(args[0]))
 
+
 @input_error
 def add_note():
-    note = input(f"{BLUE}Please enter new note: {RESET}")
+    note = PleaseEnterInput("new note").message()
+    #input(f"{BLUE}Please enter new note: {RESET}")
     if not note:
         res = input(f"{RED}Are you sure you want to save blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if not res.lower() == "y":
-            return f"{GREEN}Note was {RED}not{GREEN} saved.{RESET}"
+            return NotDoneMessage("Note", "saved").message()
+        #           f"{GREEN}Note was {RED}not{GREEN} saved.{RESET}"
     note_rec = NoteRecord(note)
-    tags = input(f"{BLUE}Please enter note tags: {RESET}")
+    tags = PleaseEnterInput("note tags").message()
+    #input(f"{BLUE}Please enter note tags: {RESET}")
     note_rec.add_tags(tags.split(", ") if "," in tags else tags.split(" "))
     add_record(note_rec)
     save_notes()
-    return f"{GREEN}The note was saved.{RESET}"
+    return DoneMessage("Note", "saved", note).message()
+#           f"{GREEN}The note was saved.{RESET}"
+
 
 @input_error
 def find_note():
@@ -361,6 +474,7 @@ def find_note():
         raise KeyError
     return res
 
+
 @input_error
 def find_note_to_func():
     num = 1
@@ -371,36 +485,49 @@ def find_note_to_func():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input(f"{BLUE}Please enter the number of the note you want to edit: {RESET}")
+        indx = PleaseEnterInput("the number of the note you want to edit").message()
+        #input(f"{BLUE}Please enter the number of the note you want to edit: {RESET}")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
     return found_notes, indx
 
+
 @input_error
 def change_note():
     found_notes, indx = find_note_to_func()
-    changed_note = input(f"{BLUE}Please enter the note to change: {RESET}")
+    changed_note = PleaseEnterInput("the note to change").message()
+    #input(f"{BLUE}Please enter the note to change: {RESET}")
     if not changed_note:
         request = input(f"{RED}Do you want save a blank note? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
         if not request.lower() == "y":
-            return f"{GREEN}Note was {RED}not{GREEN} changed. {RESET}"
+            return NotDoneMessage("Note", "changed").message()
+        #           f"{GREEN}Note was {RED}not{GREEN} changed. {RESET}"
     found_notes[int(indx)-1].edit_note(changed_note)
-    return f"{GREEN}The note was changed.{RESET}"
+    return ChangedMessage("Note", "", changed_note).message()
+            #f"\n{GREEN}Changed:\n {BLUE}Note: {RESET} --> {changed_note}"
+
 
 @input_error
 def add_tags():
     found_notes, indx = find_note_to_func()
-    new_tags = input(f"{BLUE}Please enter the tags you want to add: {RESET}")
-    found_notes[int(indx)-1].add_tags(new_tags.split(", ") if "," in new_tags else new_tags.split(" "))
-    return f"{GREEN}Tags were added.{RESET}"
+    new_tags = PleaseEnterInput("the tags you want to add").message()
+    #input(f"{BLUE}Please enter the tags you want to add: {RESET}")
+    new_tags = new_tags.split(", ") if "," in new_tags else new_tags.split(" ")
+    found_notes[int(indx)-1].add_tags(new_tags)
+    return DoneMessage("Tags", "added", new_tags).message()
+#           f"{GREEN}Tags were added.{RESET}"
+
 
 @input_error
 def delete_tags():
     found_notes, indx = find_note_to_func()
-    tags_to_del = input(f"{BLUE}Please enter the tags you want to delete: {RESET}")
+    tags_to_del = PleaseEnterInput("the tags you want to delete").message()
+    #input(f"{BLUE}Please enter the tags you want to delete: {RESET}")
     found_notes[int(indx)-1].del_tags(tags_to_del.split(", ") if "," in tags_to_del else tags_to_del.split(" "))
-    return f"{GREEN}Done.{RESET}"
+    return DoneMessage("Tags", "deleted").message().replace(":", "")
+            #f"{GREEN}Done.{RESET}"
+
 
 @input_error
 def del_note():
@@ -412,21 +539,25 @@ def del_note():
         for rec in found_notes:
             print(f"{num}. {rec.note}")
             num += 1
-        indx = input(f"{BLUE}Please enter the number of the note you want to delete: {RESET}")
+        indx = PleaseEnterInput("the number of the note you want to delete").message()
+        #input(f"{BLUE}Please enter the number of the note you want to delete: {RESET}")
     elif len(found_notes) == 1:
         indx = 1
     print(found_notes[int(indx)-1])
     check = input(f"{RED}Are you sure you want to delete this entry? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
     if not check.lower() == "y":
-        return f"{GREEN}Note was {RED}not{GREEN} deleted.{RESET}"
+        return NotDoneMessage("Note", "deleted").message()
+    #           f"{GREEN}Note was {RED}not{GREEN} deleted.{RESET}"
     delete_note(found_notes[int(indx)-1])
-    return f"{GREEN}Note was deleted.{RESET}"
+    return DoneMessage("Note", "deleted").message().replace(":", "")
+#           f"{GREEN}Note was deleted.{RESET}"
 
 @input_error
 def sort_folder(*args):
     ''' Sort files from a single folder into categorized folders '''
     if not args:
-        folder = input(f"{BLUE}Please enter the folder name: {RESET}")
+        folder = PleaseEnterInput("the folder name").message()
+        #input(f"{BLUE}Please enter the folder name: {RESET}")
         if not folder:
             raise IndexError
     else:
