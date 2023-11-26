@@ -47,7 +47,7 @@ class Console(AbstractInOut):
             else:
                 return False
         except KeyboardInterrupt:
-            console.output('\n')
+            self.output('\n')
             return False
 
     def hinted_input(self, command_hints):

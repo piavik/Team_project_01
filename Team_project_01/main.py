@@ -147,26 +147,33 @@ def unknown_command(*args) -> str:
     return f"{RED}I do not understand, please use correct command.{RESET}"
 
 @input_error
+def delete_contact(address_book, notes, *args) -> str:
+    contact_name = _name_request(*args)
+    # name not in book
+    if contact_name not in list(address_book.data.keys()):
+        raise KeyError
+    confirmed = console.confirm(f"Are you sure you want to delete the contact?")
+    if not confirmed:
+        return f"{GREEN}Contact was {RED}not{GREEN} deleted.{RESET}"
+    address_book.delete(contact_name)
+    return f'{GREEN}Deleted.{RESET}'
+
+@input_error
 def delete_phone(address_book, notes, *args) -> str:
     contact_name = _name_request(*args)
     # name not in book
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     # check if phone provided
-    if args[1:]:
-        # phone provided, so removing phone only
-        phones = args[1:]
+    phone = console.input(*args[1:], 'Please enter the phone number you want to delete')
+    if phone:
         record = address_book.data[contact_name]
-        for phone in phones:
-            record.remove_phone(phone)
+        record.remove_phone(phone)
+        return f'{GREEN}Deleted.{RESET}'
     else:
         # no phone, remove whole record
-        # res = input(f"{RED}Are you sure you want to delete contact {BLUE}{contact_name}{RED}? {GREEN}[y]{RESET}es/{GREEN}[n]{RESET}o: ")
-        confirmed = console.confirm(f"Are you sure you want to delete the contact?")
-        if not confirmed:
-            return f"{GREEN}Contact was {RED}not{GREEN} deleted.{RESET}"
-        address_book.delete(contact_name)
-    return f'{GREEN}Deleted.{RESET}'
+        return delete_contact(address_book, notes, contact_name)
+
 
 @input_error
 def delete_birthday(address_book, notes, *args) -> str:
@@ -456,10 +463,10 @@ def sort_notes(address_book, notes, *arg) -> list:
     return lst
 
 @input_error
-def sort_folder(*args) -> str:
+def sort_folder(address_book, notes, *args) -> str:
     ''' Sort files from a single folder into categorized folders '''
     # if not args:
-    folder = console.input(args[0:], prompt='Please enter the folder name')
+    folder = console.input(*args, prompt='Please enter the folder name')
     if not folder:
         raise IndexError
     # else:
@@ -514,7 +521,7 @@ def main() -> None:
         "delete tags": delete_tags,
         "delete address": delete_adress,
         "delete email": delete_email,
-        "delete": delete_phone,
+        "delete": delete_contact,
         # "d": debug_,
         "load": restore_data_from_file,
         "save": save_data_to_file,

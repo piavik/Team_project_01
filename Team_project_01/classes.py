@@ -4,7 +4,7 @@ from types import GeneratorType
 from itertools import islice
 import pickle
 from Team_project_01.fields import Name, Phone, Birthday, Adress, Email
-from Team_project_01.constants import *
+from Team_project_01.constants import RED, BLUE, GREEN, RESET, FILENAME
 
 
 class Record:
