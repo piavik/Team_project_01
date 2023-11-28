@@ -1,11 +1,11 @@
 from types import GeneratorType
 from datetime import datetime
 from functools import wraps
-from Team_project_01.classes import Record, AddressBook
-from Team_project_01.notes import Notes, NoteRecord
-from Team_project_01.folder_sort import folder_sort
-from Team_project_01.constants import *
-from Team_project_01.class_input_output import Console
+from team-project-01.classes import Record, AddressBook
+from team-project-01.notes import Notes, NoteRecord
+from team-project-01.folder_sort import folder_sort
+from team-project-01.constants import *
+from team-project-01.class_input_output import Console
 
 console = Console()
 
