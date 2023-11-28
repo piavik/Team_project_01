@@ -6,6 +6,9 @@ authors = ['GoIT PythonCore#18 project-group4']
 mainainers = ["piavik <piavik@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [
+    { include = "Team_project_01" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"

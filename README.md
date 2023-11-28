@@ -4,10 +4,12 @@ Updated and improved by __"Bot farm"__ team.
 
 # __Installation instructions__ :
 ```sh
-1. Create a new folder on the local computer, and sqitch to it
+1. Create a new folder on the local computer, and switch to it
 2. git clone https://github.com/piavik/Team_project_01
-3. cd Team_project_01
-4. python setup.py install
+3. poetry install 
+
+Or manually:
+3. cd Team_project_01 && pip install .
 ```
 
 # __User manual__
