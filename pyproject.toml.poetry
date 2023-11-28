@@ -2,13 +2,14 @@
 name = "Team_project_01"
 version = "0.6.2"
 description = "CLI Assistant"
-authors = ["piavik <piavik@gmail.com>"]
+authors = ['GoIT PythonCore#18 project-group4']
+mainainers = ["piavik <piavik@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-prompt-toolkit = "^3.0.41"
+prompt-toolkit = "^3.0"
 
 [tool.poetry.scripts]
 Informator = "Team_project_01.main:main"
