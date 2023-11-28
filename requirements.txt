@@ -1,3 +1,2 @@
-prompt-toolkit==3.0.41
-# Team_project_01 @ file://./Team_project_01
-wcwidth==0.2.12
+prompt-toolkit==3.0.41 ; python_version >= "3.11" and python_version < "4.0"
+wcwidth==0.2.12 ; python_version >= "3.11" and python_version < "4.0"
