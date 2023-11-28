@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Team_project_01"
-version = "0.6.1"
+version = "0.6.2"
 description = "CLI Assistant"
 authors = ["piavik <piavik@gmail.com>"]
 license = "MIT"
