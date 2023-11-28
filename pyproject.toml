@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "Team_project_01"
-version = "0.6.4"
+name = "team-project-01"
+version = "0.6.5"
 description = "CLI Assistant"
 authors = ["piavik <piavik@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [
-    { include = "Team_project_01" },
+    { include = "team-project-01" },
 ]
 
 [tool.poetry.dependencies]
@@ -20,4 +20,3 @@ botik = "Team_project_01.main:main"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
