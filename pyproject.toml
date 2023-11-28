@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "team-project-01"
-version = "0.6.1"
+name = "Team_project_01"
+version = "0.6.2"
 description = "CLI Assistant"
 authors = ["piavik <piavik@gmail.com>"]
 license = "MIT"
@@ -11,8 +11,8 @@ python = "^3.9"
 prompt-toolkit = "^3.0.41"
 
 [tool.poetry.scripts]
-Informator = "team-project-01.main:main"
-botik = "team-project-01.main:main"
+Informator = "Team_project_01.main:main"
+botik = "Team_project_01.main:main"
 
 [build-system]
 requires = ["poetry-core"]

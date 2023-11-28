@@ -3,8 +3,8 @@ from datetime import datetime
 from types import GeneratorType
 from itertools import islice
 import pickle
-from team-project-01.fields import Name, Phone, Birthday, Adress, Email
-from team-project-01.constants import RED, BLUE, GREEN, RESET, FILENAME
+from Team_project_01.fields import Name, Phone, Birthday, Adress, Email
+from Team_project_01.constants import RED, BLUE, GREEN, RESET, FILENAME
 
 
 class Record:
