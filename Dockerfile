@@ -1,8 +1,8 @@
-FROM python:3.9-slim
+FROM python:3.9-alpine
 
 ENV APP_HOME=/app
 
-WORKDIR = $APP_HOME
+WORKDIR $APP_HOME
 
 COPY ./ .
 
