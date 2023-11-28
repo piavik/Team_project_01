@@ -1,3 +1,2 @@
 prompt-toolkit==3.0.41
-# Team_project_01 @ file://./Team_project_01
 wcwidth==0.2.12
