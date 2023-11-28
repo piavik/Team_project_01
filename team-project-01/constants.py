@@ -1,4 +1,25 @@
-TEXT = '''
+RED = "\033[91m"
+GREEN = "\033[92m"
+BLUE = "\033[94m"
+RESET = "\033[0m"
+
+FILENAME = "book.bin"
+
+STOP_WORDS = [
+                'good bye', 
+                'goodbye', 
+                'bye', 
+                'close', 
+                'exit', 
+                'quit', 
+                'stop', 
+                'enough',
+                'finish',
+                'pa',
+                'q'
+            ]
+
+README_TEXT = '''
     [92mThis is the CLI Address Book - an application that will simplify your work
     with contact information and save your time for more interesting cases.
     [94mUpdated and improved by "Bot farm " team.

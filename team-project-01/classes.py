@@ -3,14 +3,9 @@ from datetime import datetime
 from types import GeneratorType
 from itertools import islice
 import pickle
-from Team_project_01.fields import Field, Name, Phone, Birthday, Adress, Email
+from team-project-01.fields import Name, Phone, Birthday, Adress, Email
+from team-project-01.constants import RED, BLUE, GREEN, RESET, FILENAME
 
-
-RED = "\033[91m"
-GREEN = "\033[92m"
-BLUE = "\033[94m"
-RESET = "\033[0m"
-FILENAME = "book.dat"
 
 class Record:
     '''
@@ -117,7 +112,7 @@ class Record:
         return difference
 
 class AddressBook(UserDict):
-    ''' Клас для зберігання та управління записами. '''
+    ''' Клас для зберігання та управління записами адресної книги. '''
 
     def add_record(self, record: Record) -> None:
         ''' Додавання запису до self.data '''
@@ -158,18 +153,24 @@ class AddressBook(UserDict):
             suit_lst.append(f"{BLUE}Noone has birthday in {days} days!{RESET}")
         for i in range(0, len(suit_lst)):
             yield islice(suit_lst, i, i+1)
-            
 
-    def save(self, filename="book.dat", format='bin') -> None:
+    def save(self, filename=FILENAME, format='bin') -> None:
         ''' TODO: format selection and using different formats '''
         with open(filename, 'wb') as fh:
             pickle.dump(self.data, fh)
 
-    def load(self, filename="book.dat", format='bin') -> None:
+    def load(self, filename=FILENAME, format='bin') -> None:
         ''' TODO: format selection and using different formats '''
         # check if filename provided as non-default argument, else -> request, if empty -> set default
         try:
             with open(filename, 'rb') as fh:
                 self.data = pickle.load(fh)
         except FileNotFoundError:
-            print(f'{BLUE}File not found, using new book.{RESET}')
+            #self.save(filename)
+            ...
+
+# class Bot():
+#     '''
+#     Клас для інтерактивного спілкування з користувачем.
+#     '''
+#     ...

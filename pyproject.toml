@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "team-project-01"
+version = "0.6.1"
+description = "CLI Assistant"
+authors = ["piavik <piavik@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+prompt-toolkit = "^3.0.41"
+
+[tool.poetry.scripts]
+Informator = "team-project-01.main:main"
+botik = "team-project-01.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
