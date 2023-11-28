@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from functools import wraps
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
-from team-project-01.constants import RED, BLUE, GREEN, RESET
+from Team_project_01.constants import RED, BLUE, GREEN, RESET
 
 # class GeneratorHandler():
 #     @wraps(func)
