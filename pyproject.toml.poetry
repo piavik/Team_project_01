@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "team-project-01"
-version = "0.6.6"
+version = "0.7.0"
 description = "CLI Assistant"
 authors = ["piavik <piavik@gmail.com>"]
 license = "MIT"
@@ -10,7 +10,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 prompt-toolkit = "^3.0"
 
 [tool.poetry.scripts]
