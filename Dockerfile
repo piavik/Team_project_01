@@ -1,10 +1,10 @@
-FROM python:3.9-alpine
+FROM python:3.11-alpine
 
-ENV APP_HOME=/app
+ENV APP="/Team_project_01"
 
-WORKDIR $APP_HOME
+RUN apk update && apk add git && git clone https://github.com/piavik/Team_project_01.git
 
-COPY ./ .
+WORKDIR ${APP}
 
 RUN pip install -r requirements.txt .
 

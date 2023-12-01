@@ -73,7 +73,7 @@ def add_birthday(address_book, notes,  *args) -> str:
     #     birthday = args[1]
     # else:
     #     # birthday = input(f'{BLUE}Please enter birthday ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
-    birthday = console.input(args[1:], prompt=f'Please enter birthday ({GREEN}YYYY-MM-DD{BLUE})')
+    birthday = console.input(*args[1:], prompt=f'Please enter birthday ({GREEN}YYYY-MM-DD{BLUE})')
     if contact_name in address_book.data.keys():
         record = address_book.data[contact_name]
         record.add_birthday(birthday)
@@ -103,7 +103,7 @@ def change_phone(address_book, notes,  *args) -> str:
         #     old_phone = args[1]
         # else:
         #     # old_phone = input(f'{BLUE}Please enter old number: {RESET}')
-        old_phone = console.input(args[1:], prompt='Please enter old number')
+        old_phone = console.input(*args[1:], prompt='Please enter old number')
         if not old_phone in ' '.join([phone.value for phone in record.phones]):
             raise KeyError
         # new_phone = input(f'{BLUE}Please enter new number ({GREEN}10 digits{BLUE}): {RESET}')
@@ -123,7 +123,7 @@ def change_birthday(address_book, notes,  *args) -> str:
     #     new_birthday = args[1]
     # else:
     #     # new_birthday = input(f'{BLUE}Please enter new birthday date ({GREEN}YYYY-MM-DD{BLUE}): {RESET}')
-    new_birthday = console.input(args[1:], prompt=f'Please enter new birthday date ({GREEN}YYYY-MM-DD{BLUE})')
+    new_birthday = console.input(*args[1:], prompt=f'Please enter new birthday date ({GREEN}YYYY-MM-DD{BLUE})')
     record.add_birthday(new_birthday)
     message = f"\n{GREEN}Changed to:{RESET} {new_birthday}"
     return message
@@ -208,7 +208,7 @@ def add_email(address_book, notes, *args) -> str:
     # else:
     #     # email = input(f"{BLUE}Please enter the email: {RESET}")
         
-    email = console.input(args[1:], prompt='Please enter the email')
+    email = console.input(*args[1:], prompt='Please enter the email')
     if email in [e.value for e in record.emails]:
         return f"{BLUE}{contact_name} already has this email: {RESET}{email} {BLUE}Skipping...{RESET}"
     email_to_add = email
@@ -242,7 +242,7 @@ def delete_email(address_book, notes, *args) -> str:
     if contact_name not in list(address_book.data.keys()):
         raise KeyError
     record:Record = address_book.data[contact_name]
-    emails_to_delete = [console.input(args[1:], prompt='Please enter email')]
+    emails_to_delete = [console.input(*args[1:], prompt='Please enter email')]
     for email in emails_to_delete:
         if email not in [e.value for e in record.emails]:
             return f"{BLUE}{contact_name} does not have such email. Skipping...{RESET}"
@@ -259,8 +259,8 @@ def add_adress(address_book, notes, *args) -> str:
     # if args[1:]:
     #     adress_to_add = args[1:]
     # else:
-    #     # entered = input(f"{BLUE}Enter adress: {RESET}")
-    entered = console.input(args[1:], prompt='Enter adress')
+    #     # entered = input(f"{BLUE}Enter adress: {RESET}")ad
+    entered = console.input(*args[1:], prompt='Enter adress')
     adress_to_add = entered.split(' ')
     if len(adress_to_add[0].strip()) < 1:
         raise ValueError
