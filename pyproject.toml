@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "team-project-group-4"
+version = "0.1.0"
+description = ""
+authors = ["kostjavovhc <kostjavovhc@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requires = "^0.10.5"
+prompt = "^0.4.1"
+prompt-toolkit = "^3.0.41"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
